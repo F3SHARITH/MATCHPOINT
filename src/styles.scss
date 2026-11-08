@@ -1,0 +1,191 @@
+/* Estilos globales del proyecto MatchPoint */
+
+/*
+ * --brand es el color de acento de toda la app. Cambia según el deporte elegido
+ * (data-deporte en <html>, lo pone TemaDeporteService). Registrarlo con @property
+ * permite que el cambio de color sea una transición suave en vez de un salto.
+ */
+@property --brand {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #C6FF3D;
+}
+
+:root {
+  --bg: #0A0D0B;
+  --bg-soft: #0E1210;
+  --surface: #131914;
+  --surface-2: #182019;
+  --border: #212B22;
+  --border-soft: #1A231C;
+  --text: #EAF2EC;
+  --text-dim: #93A69A;
+  --text-faint: #5E6E64;
+  --danger: #FF6A6A;
+  --warning: #FFB547;
+  --ok: #3DDC73;
+
+  /* Un color por deporte. Deben coincidir con `hex` en DEPORTES (canchas.mock.ts). */
+  --futbol: #3DDC73;
+  --voley: #FFD23F;
+  --baloncesto: #FF8A1F;
+  --tenis: #4C9BFF;
+  --padel: #C084F5;
+
+  --matchpoint: #C6FF3D;
+  --brand: var(--matchpoint);
+  --brand-ink: #0E1409;
+  --brand-soft: color-mix(in srgb, var(--brand) 14%, transparent);
+
+  color-scheme: dark;
+  transition: --brand 0.45s ease;
+}
+
+:root[data-deporte='futbol'] { --brand: var(--futbol); }
+:root[data-deporte='voley'] { --brand: var(--voley); }
+:root[data-deporte='baloncesto'] { --brand: var(--baloncesto); }
+:root[data-deporte='tenis'] { --brand: var(--tenis); }
+:root[data-deporte='padel'] { --brand: var(--padel); }
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  background: var(--bg);
+}
+
+body {
+  font-family: 'Manrope', system-ui, sans-serif;
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+}
+
+button, input, select { font: inherit; }
+a { color: inherit; }
+
+@media (prefers-reduced-motion: reduce) {
+  :root { transition: none; }
+}
+
+/* ---------- Piezas compartidas por todas las pantallas ---------- */
+
+.page { max-width: 1180px; margin: 0 auto; padding: 28px 24px 96px; }
+
+.page-head {
+  display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+  margin-bottom: 22px;
+
+  h1 { font-family: 'Outfit', sans-serif; font-size: 28px; font-weight: 800; margin: 0; letter-spacing: -0.01em; }
+  p { margin: 4px 0 0; color: var(--text-dim); font-size: 14px; }
+}
+
+.acento { color: var(--brand); }
+
+.panel {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 18px;
+
+  > h2 {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    font-family: 'Outfit', sans-serif; font-size: 17px; font-weight: 700; margin: 0 0 14px;
+  }
+}
+
+.kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 18px; }
+.kpi {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 14px 16px;
+
+  .lbl { font-size: 12.5px; color: var(--text-dim); font-weight: 600; }
+  .num { font-family: 'Outfit', sans-serif; font-size: 26px; font-weight: 700; margin-top: 4px; font-variant-numeric: tabular-nums; }
+  .sub { font-size: 12px; color: var(--text-faint); margin-top: 2px; }
+}
+@media (max-width: 920px) { .kpis { grid-template-columns: repeat(2, 1fr); } }
+
+.boton {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  border: 1px solid transparent; border-radius: 10px; padding: 10px 16px;
+  font-weight: 700; font-size: 14px; cursor: pointer; text-decoration: none; white-space: nowrap;
+  transition: filter 0.15s, background 0.15s, border-color 0.15s;
+
+  &:disabled { opacity: 0.45; cursor: not-allowed; }
+}
+.boton-primario { background: var(--brand); color: var(--brand-ink); &:not(:disabled):hover { filter: brightness(1.08); } }
+.boton-secundario { background: var(--surface-2); color: var(--text); border-color: var(--border); &:not(:disabled):hover { border-color: var(--text-faint); } }
+.boton-peligro { background: transparent; color: var(--danger); border-color: color-mix(in srgb, var(--danger) 45%, var(--border)); }
+.boton-grande { padding: 14px 20px; font-size: 15.5px; border-radius: 12px; width: 100%; }
+.boton-chico { padding: 6px 10px; font-size: 12.5px; border-radius: 8px; app-icono { width: 16px; height: 16px; } }
+
+.estado {
+  display: inline-flex; align-items: center; gap: 6px; padding: 3px 9px; border-radius: 999px;
+  font-size: 11.5px; font-weight: 800; white-space: nowrap;
+
+  &::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+  &.ok { color: var(--ok); background: color-mix(in srgb, var(--ok) 14%, transparent); }
+  &.aviso { color: var(--warning); background: color-mix(in srgb, var(--warning) 14%, transparent); }
+  &.mal { color: var(--danger); background: color-mix(in srgb, var(--danger) 14%, transparent); }
+  &.neutro { color: var(--text-dim); background: var(--surface-2); }
+}
+
+.tabla {
+  width: 100%; border-collapse: collapse; font-size: 13.5px;
+
+  th { text-align: left; font-size: 12px; color: var(--text-faint); font-weight: 700; padding: 0 10px 10px; }
+  td { padding: 11px 10px; border-top: 1px solid var(--border-soft); vertical-align: middle; }
+  .num { text-align: right; font-variant-numeric: tabular-nums; }
+}
+.tabla-scroll { overflow-x: auto; margin: 0 -4px; }
+
+.punto-deporte { display: inline-block; width: 9px; height: 9px; border-radius: 50%; flex: none; }
+
+/* Botón de opción (día, hora, método de pago, "¿quién paga?"): se rellena con el color de acento al elegirlo. */
+.eleccion {
+  display: flex; flex-direction: column; gap: 1px; padding: 10px 12px; text-align: left; cursor: pointer;
+  border: 1px solid var(--border); border-radius: 10px; background: var(--surface); color: var(--text);
+  font-weight: 700; font-size: 13.5px;
+
+  small { font-size: 11.5px; font-weight: 500; color: var(--text-dim); }
+  &:not(:disabled):hover { border-color: var(--brand); }
+  &.activo { border-color: var(--brand); background: var(--brand); color: var(--brand-ink); }
+  &.activo small { color: color-mix(in srgb, var(--brand-ink) 75%, transparent); }
+}
+
+.entrada {
+  width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--border);
+  background: var(--surface); color: var(--text); font-size: 14px;
+  &:focus { outline: none; border-color: var(--brand); }
+}
+
+/* Caja de aviso con el color de acento (anticipo, confianza, deudas del reto). */
+.nota-caja {
+  padding: 11px 13px; border-radius: 12px; font-size: 13px; line-height: 1.5;
+  background: var(--brand-soft); border: 1px solid color-mix(in srgb, var(--brand) 35%, var(--border));
+  b { color: var(--text); }
+}
+
+.insignia {
+  display: inline-flex; align-items: center; gap: 4px; padding: 2px 7px; border-radius: 6px; white-space: nowrap;
+  font-size: 11px; font-weight: 800; color: var(--text-dim); background: var(--surface-2); border: 1px solid var(--border);
+}
+
+.interruptor {
+  min-width: 84px; border-radius: 999px; padding: 6px 10px; cursor: pointer; font-size: 12px; font-weight: 800;
+  border: 1px solid var(--border); background: var(--surface-2); color: var(--text-dim);
+  &.on { background: color-mix(in srgb, var(--ok) 16%, transparent); border-color: var(--ok); color: var(--ok); }
+}
+
+.modal-fondo { position: fixed; inset: 0; z-index: 40; background: rgba(4, 6, 5, 0.75); }
+.modal {
+  position: fixed; z-index: 41; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  width: min(460px, calc(100vw - 24px)); max-height: calc(100vh - 32px); overflow-y: auto;
+  background: var(--bg-soft); border: 1px solid var(--border); border-radius: 18px; padding: 20px;
+}
+
+.vacio {
+  text-align: center; padding: 40px 16px; color: var(--text-dim);
+  h3 { color: var(--text); margin: 0 0 6px; font-family: 'Outfit', sans-serif; }
+  p { margin: 0 0 16px; }
+}

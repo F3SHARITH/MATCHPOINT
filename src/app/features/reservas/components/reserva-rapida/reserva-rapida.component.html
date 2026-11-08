@@ -1,0 +1,149 @@
+<div class="modal-fondo" (click)="cerrar.emit()"></div>
+
+<aside class="hoja" role="dialog" aria-modal="true" [attr.aria-label]="'Reservar ' + cancha.nombre" [style.--brand]="deporte.hex">
+  <header class="cabecera" [style.background-image]="cancha.imagenUrl ? 'url(' + cancha.imagenUrl + '?auto=format&fit=crop&w=800&q=60)' : null">
+    <div class="cabecera-velo"></div>
+    <button type="button" class="cerrar" (click)="cerrar.emit()" aria-label="Cerrar">
+      <app-icono nombre="cerrar" />
+    </button>
+    <div class="cabecera-texto">
+      <span class="deporte"><span class="punto-deporte" [style.background]="deporte.hex"></span>{{ deporte.nombre }}</span>
+      <h2>{{ cancha.nombre }}</h2>
+      <p>{{ nombreEmpresa }} · {{ cancha.zona }} · {{ cancha.precioHora | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}/hora</p>
+    </div>
+  </header>
+
+  @if (reservaHecha(); as reserva) {
+    <app-confirmacion-reserva [reserva]="reserva" [cancha]="cancha" (cerrar)="cerrar.emit()" />
+  } @else {
+    <div class="pasos">
+      <section>
+        <h3><span class="num">1</span> ¿Qué día?</h3>
+        <div class="dias">
+          @for (dia of dias; track dia) {
+            <button type="button" class="eleccion dia" [class.activo]="fecha() === dia" (click)="elegirDia(dia)">
+              <small>{{ etiquetaDia(dia) }}</small>
+              <span class="dia-num">{{ diaDelMes(dia) }}</span>
+            </button>
+          }
+        </div>
+      </section>
+
+      <section>
+        <h3>
+          <span class="num">2</span> ¿A qué hora?
+          <span class="libres">{{ horasLibres() }} {{ horasLibres() === 1 ? 'libre' : 'libres' }}</span>
+        </h3>
+        @if (horasLibres() === 0) {
+          <p class="sin-horas">Este día ya no quedan horas. Prueba con otro día.</p>
+        }
+        @for (franja of franjas(); track franja.nombre) {
+          <div class="franja">
+            <span class="franja-nombre">{{ franja.nombre }}</span>
+            <div class="horas">
+              @for (h of franja.horas; track h.hora) {
+                <button
+                  type="button"
+                  class="eleccion hora"
+                  [class.activo]="hora() === h.hora"
+                  [class.no-disponible]="h.estado !== 'libre'"
+                  [disabled]="h.estado !== 'libre'"
+                  [attr.title]="h.estado === 'ocupada' ? 'Ya reservada' : h.estado === 'pasada' ? 'Esta hora ya pasó' : null"
+                  (click)="hora.set(h.hora)">
+                  {{ horaTexto(h.hora) }}
+                </button>
+              }
+            </div>
+          </div>
+        }
+      </section>
+
+      <section>
+        <h3><span class="num">3</span> ¿Quién paga?</h3>
+        <div class="modalidades">
+          @for (m of modalidades; track m.id) {
+            <button type="button" class="eleccion" [class.activo]="modalidad() === m.id" (click)="modalidad.set(m.id)">
+              {{ m.titulo }}<small>{{ m.detalle }}</small>
+            </button>
+          }
+        </div>
+
+        @if (modalidad() === 'vaca') {
+          <div class="detalle-modalidad">
+            <span>¿Cuántos son?</span>
+            <div class="contador">
+              <button type="button" (click)="cambiarJugadores(-1)" aria-label="Menos jugadores">−</button>
+              <b>{{ jugadores() }}</b>
+              <button type="button" (click)="cambiarJugadores(1)" aria-label="Más jugadores">+</button>
+            </div>
+            <span class="cuota">{{ cuota() | currency: 'COP' : 'symbol-narrow' : '1.0-0' }} cada uno</span>
+          </div>
+        }
+
+        @if (modalidad() === 'reto') {
+          <div class="equipos">
+            <input class="entrada" placeholder="Tu equipo" aria-label="Nombre de tu equipo"
+              [value]="equipoPropio()" (input)="equipoPropio.set($any($event.target).value)" />
+            <span class="vs">vs</span>
+            <input class="entrada" placeholder="Equipo rival" aria-label="Nombre del equipo rival"
+              [value]="equipoRival()" (input)="equipoRival.set($any($event.target).value)" />
+          </div>
+          <p class="ayuda">Al terminar, la cancha anota quién ganó y el que pierde paga el saldo.</p>
+        }
+      </section>
+
+      <section>
+        <h3><span class="num">4</span> ¿Cómo pagas?</h3>
+        @if (anticipo().monto) {
+          <p class="nota-caja">
+            Para confirmar, deja un anticipo de <b>{{ anticipo().monto | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</b>.
+            {{ anticipo().razon }} El resto
+            (<b>{{ cancha.precioHora - anticipo().monto | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</b>) se paga en la cancha.
+          </p>
+        }
+        <div class="metodos">
+          @for (m of metodos(); track m.id) {
+            <button type="button" class="eleccion" [class.activo]="metodo() === m.id" (click)="metodoElegido.set(m.id)">
+              {{ m.nombre }}<small>{{ m.descripcion }}</small>
+            </button>
+          }
+        </div>
+        <p class="confianza">
+          @if (confianza().esDeConfianza) {
+            <app-icono nombre="check" /> Tienes nivel de confianza: no te pedimos anticipo.
+          } @else if (confianza().fallas) {
+            Tienes reservas a las que no llegaste, por eso algunas canchas te piden anticipo.
+          } @else {
+            Nivel de confianza: {{ confianza().cumplidas }} de {{ reservasParaConfianza }} reservas cumplidas.
+            Con {{ reservasParaConfianza }}, no te pedimos anticipo.
+          }
+        </p>
+      </section>
+    </div>
+
+    <footer class="pie">
+      <div class="resumen">
+        @if (hora() !== null) {
+          <span>{{ etiquetaDia(fecha()) }} · {{ horaTexto(hora()!) }} · 1 hora</span>
+        } @else {
+          <span>{{ faltaParaConfirmar() }}</span>
+        }
+        <b>{{ cancha.precioHora | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</b>
+      </div>
+      <button type="button" class="boton boton-primario boton-grande" [disabled]="!!faltaParaConfirmar()" (click)="confirmar()">
+        @if (faltaParaConfirmar() && hora() !== null) {
+          {{ faltaParaConfirmar() }}
+        } @else if (!pagaAhora()) {
+          Reservar y pagar en la cancha
+        } @else if (anticipo().monto) {
+          Pagar anticipo de {{ pagaAhora() | currency: 'COP' : 'symbol-narrow' : '1.0-0' }} y reservar
+        } @else {
+          Pagar {{ pagaAhora() | currency: 'COP' : 'symbol-narrow' : '1.0-0' }} y reservar
+        }
+      </button>
+      @if (pagaAhora()) {
+        <small class="demo">Demo: el pago en línea es simulado.</small>
+      }
+    </footer>
+  }
+</aside>

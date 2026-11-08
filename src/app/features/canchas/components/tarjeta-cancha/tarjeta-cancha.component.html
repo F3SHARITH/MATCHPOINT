@@ -1,0 +1,68 @@
+<article class="card" [style.--c]="deporte.hex">
+  <div class="card-media">
+    @if (cancha.imagenUrl) {
+      <img
+        class="card-img"
+        [src]="cancha.imagenUrl + '?auto=format&fit=crop&w=600&q=65'"
+        [alt]="deporte.nombre + ' en ' + cancha.nombre"
+        loading="lazy"
+        (error)="imagenConError = true"
+        [class.oculta]="imagenConError" />
+    }
+
+    <div class="card-media-overlay"></div>
+
+    @if (modo === 'empresa' && esPropia) {
+      <span class="ribbon">Tuya</span>
+    } @else if (etiqueta) {
+      <span class="ribbon">{{ etiqueta }}</span>
+    }
+    @if (modo === 'usuario') {
+      <button class="fav-btn" [class.on]="esFavorita" (click)="favorito.emit(cancha.id)" aria-label="Favorito">
+        {{ esFavorita ? '♥' : '♡' }}
+      </button>
+    }
+    <span class="avail-badge" [class.yes]="cancha.disponibleAhora" [class.no]="!cancha.disponibleAhora">
+      {{ cancha.disponibleAhora ? 'Disponible ahora' : 'Ocupada' }}
+    </span>
+  </div>
+
+  <div class="card-body">
+    <span class="sport-badge" [style.--c]="deporte.hex">
+      <span class="dot"></span>{{ deporte.nombre }}
+    </span>
+
+    <h3 class="card-title">{{ cancha.nombre }}</h3>
+    <p class="card-sub">{{ nombreEmpresa }} · {{ cancha.zona }} · {{ cancha.distanciaKm }} km</p>
+
+    <div class="card-tags">
+      @for (tag of cancha.tags; track tag) {
+        <span class="tag">{{ tag }}</span>
+      }
+    </div>
+
+    @if (modo === 'empresa' && esPropia) {
+      <div class="occ-lbl"><span>Ocupación semana</span><span>{{ ocupacionSemana }}%</span></div>
+      <div class="occ-bar"><i [style.width.%]="ocupacionSemana"></i></div>
+    }
+
+    <div class="card-meta-row">
+      <div class="price">${{ cancha.precioHora | number:'1.0-0':'es-CO' }}<span> /hora</span></div>
+      <div class="rating">★ {{ cancha.calificacion.toFixed(1) }} <span>({{ cancha.numResenas }})</span></div>
+    </div>
+
+    <div class="card-actions">
+      @if (modo === 'usuario') {
+        <button class="btn btn-primary" (click)="reservar.emit(cancha.id)">Reservar ahora</button>
+        <button class="btn btn-ghost" type="button">Detalles</button>
+      } @else if (modo === 'admin') {
+        <button class="btn btn-ghost" type="button">Ver ficha</button>
+      } @else if (esPropia) {
+        <button class="btn btn-primary" (click)="gestionar.emit(cancha.id)">Gestionar</button>
+        <button class="btn btn-ghost" type="button">Ver ficha</button>
+      } @else {
+        <button class="btn btn-muted" disabled>Cancha de otra empresa</button>
+      }
+    </div>
+  </div>
+</article>

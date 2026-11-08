@@ -1,0 +1,111 @@
+<div class="page">
+  <div class="page-head">
+    <div>
+      <h1>Panel general</h1>
+      <p>Toda la plataforma en una pantalla · {{ hoy }}</p>
+    </div>
+  </div>
+
+  <div class="kpis">
+    <div class="kpi">
+      <div class="lbl"><app-icono nombre="edificio" /> Empresas</div>
+      <div class="num">{{ empresas().length }}</div>
+      <div class="sub">{{ plataforma.empresasPagando() }} pagando · {{ empresasConDeuda() }} vencidas</div>
+    </div>
+    <div class="kpi">
+      <div class="lbl"><app-icono nombre="usuarios" /> Jugadores</div>
+      <div class="num">{{ jugadores() }}</div>
+      <div class="sub">Con al menos una reserva</div>
+    </div>
+    <div class="kpi">
+      <div class="lbl"><app-icono nombre="calendario" /> Reservas del mes</div>
+      <div class="num">{{ totalReservasMes() }}</div>
+      <div class="sub">Sin contar canceladas</div>
+    </div>
+    <div class="kpi destacado">
+      <div class="lbl"><app-icono nombre="dinero" /> Ingreso mensual</div>
+      <div class="num">{{ plataforma.ingresoMensual() | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</div>
+      <div class="sub">
+        {{ plataforma.empresasPagando() }} × {{ plataforma.valorMensualidad() | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}
+      </div>
+    </div>
+  </div>
+
+  <section class="panel">
+    <h2>Mensualidades de las empresas</h2>
+    <div class="tabla-scroll">
+      <table class="tabla">
+        <thead>
+          <tr><th>Empresa</th><th>Zona</th><th class="num">Canchas</th><th>Próximo cobro</th><th>Estado</th><th></th></tr>
+        </thead>
+        <tbody>
+          @for (fila of empresas(); track fila.empresa.id) {
+            <tr [class.apagada]="fila.estado === 'suspendida'">
+              <td><b>{{ fila.empresa.nombre }}</b></td>
+              <td>{{ fila.empresa.zona }}</td>
+              <td class="num">{{ fila.canchas }}</td>
+              <td>{{ fila.suscripcion ? fechaCorta(fila.suscripcion.proximoCobro) : '—' }}</td>
+              <td>
+                <span class="estado" [class.ok]="fila.estado === 'al-dia'" [class.aviso]="fila.estado === 'por-vencer'"
+                  [class.mal]="fila.estado === 'vencida'" [class.neutro]="fila.estado === 'suspendida'">
+                  {{ textoEstado[fila.estado] }}
+                </span>
+              </td>
+              <td class="acciones">
+                @if (fila.estado !== 'al-dia') {
+                  <button type="button" class="boton boton-primario boton-chico" (click)="plataforma.registrarPago(fila.empresa.id)">
+                    Registrar pago
+                  </button>
+                }
+                @if (fila.estado === 'suspendida') {
+                  <button type="button" class="boton boton-secundario boton-chico" (click)="plataforma.reactivar(fila.empresa.id)">Reactivar</button>
+                } @else {
+                  <button type="button" class="boton boton-peligro boton-chico" (click)="plataforma.suspender(fila.empresa.id)">Suspender</button>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    <p class="nota">Suspender oculta las canchas de esa empresa a los jugadores hasta que la reactives o registres su pago.</p>
+  </section>
+
+  <div class="columnas">
+    <section class="panel">
+      <h2>Pagos</h2>
+
+      <label class="campo">
+        <span>Valor de la mensualidad para empresas</span>
+        <span class="entrada-dinero">
+          $ <input type="number" min="1000" step="1000" [value]="plataforma.valorMensualidad()" (change)="cambiarValor($any($event.target).value)" />
+          <small>/mes</small>
+        </span>
+      </label>
+
+      <h3>Métodos de pago para reservar</h3>
+      <p class="nota">Los jugadores solo ven los métodos activos.</p>
+      @for (metodo of plataforma.metodosPago(); track metodo.id) {
+        <div class="metodo">
+          <app-icono nombre="tarjeta" />
+          <span class="metodo-texto"><b>{{ metodo.nombre }}</b><small>{{ metodo.descripcion }}</small></span>
+          <button type="button" class="interruptor" [class.on]="metodo.activo" (click)="plataforma.toggleMetodo(metodo.id)"
+            [attr.aria-pressed]="metodo.activo">
+            {{ metodo.activo ? 'Activo' : 'Apagado' }}
+          </button>
+        </div>
+      }
+    </section>
+
+    <section class="panel">
+      <h2>Reservas por deporte · este mes</h2>
+      @for (fila of porDeporte(); track fila.deporte.id) {
+        <div class="barra-fila">
+          <span class="barra-nombre"><span class="punto-deporte" [style.background]="fila.deporte.hex"></span>{{ fila.deporte.nombre }}</span>
+          <span class="barra"><i [style.width.%]="fila.porcentaje" [style.background]="fila.deporte.hex"></i></span>
+          <b>{{ fila.total }}</b>
+        </div>
+      }
+    </section>
+  </div>
+</div>

@@ -1,0 +1,73 @@
+<section class="nueva">
+  <div class="cabecera">
+    <span class="avatar">{{ sesion.iniciales() }}</span>
+    <b>¿Qué quieres publicar?</b>
+  </div>
+
+  <div class="tipos" [style.grid-template-columns]="'repeat(' + tipos().length + ', 1fr)'">
+    @for (t of tipos(); track t.id) {
+      <button type="button" class="eleccion" [class.activo]="tipo() === t.id" (click)="tipo.set(t.id)">
+        {{ t.titulo }}<small>{{ t.detalle }}</small>
+      </button>
+    }
+  </div>
+
+  @if (tipo() === 'faltan' && misReservas().length) {
+    <label class="etiqueta" for="reservaPartido">¿Para cuál partido?</label>
+    <select id="reservaPartido" class="entrada" (change)="reservaId.set($any($event.target).value)">
+      <option value="">Todavía no tengo cancha</option>
+      @for (r of misReservas(); track r.id) {
+        <option [value]="r.id" [selected]="r.id === reservaId()">{{ nombreReserva(r) }}</option>
+      }
+    </select>
+  }
+
+  @if (!reserva()) {
+    <span class="etiqueta">Deporte</span>
+    <div class="deportes">
+      @for (d of canchasService.deportes(); track d.id) {
+        <button type="button" class="chip-deporte" [style.--c]="d.hex" [class.activo]="deporteElegido() === d.id"
+          (click)="deporteElegido.set(deporteElegido() === d.id ? null : d.id)">
+          <span class="punto-deporte" [style.background]="d.hex"></span>{{ d.nombre }}
+        </button>
+      }
+    </div>
+  }
+
+  @if (tipo() === 'faltan') {
+    <div class="detalles">
+      <div>
+        <span class="etiqueta">¿Cuántos faltan?</span>
+        <div class="contador">
+          <button type="button" (click)="cambiarFaltan(-1)" aria-label="Menos">−</button>
+          <b>{{ faltan() }}</b>
+          <button type="button" (click)="cambiarFaltan(1)" aria-label="Más">+</button>
+        </div>
+      </div>
+      <div class="nivel">
+        <span class="etiqueta">Nivel</span>
+        <div class="niveles">
+          @for (n of niveles; track n[0]) {
+            <button type="button" class="eleccion" [class.activo]="nivel() === n[0]" (click)="nivel.set(n[0])">{{ n[1] }}</button>
+          }
+        </div>
+      </div>
+    </div>
+    @if (cuota()) {
+      <p class="ayuda">
+        Cada uno pone <b>{{ cuota() | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</b>.
+        @if (reserva()?.vaca) { Los que se apunten entran solos a tu vaca. }
+      </p>
+    }
+  }
+
+  <textarea class="entrada" rows="2" [placeholder]="placeholder()" [value]="texto()" (input)="texto.set($any($event.target).value)"
+    aria-label="Texto de la publicación"></textarea>
+
+  <div class="pie">
+    @if (!puedePublicar()) {
+      <small>{{ tipo() === 'faltan' || tipo() === 'busco-equipo' ? 'Elige el deporte' : 'Escribe algo para publicar' }}</small>
+    }
+    <button type="button" class="boton boton-primario" [disabled]="!puedePublicar()" (click)="publicar()">Publicar</button>
+  </div>
+</section>

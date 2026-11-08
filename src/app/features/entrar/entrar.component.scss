@@ -1,0 +1,45 @@
+.entrar {
+  min-height: 100vh; display: grid; place-items: center; padding: 32px 16px;
+  background:
+    radial-gradient(700px 420px at 50% -10%, color-mix(in srgb, var(--brand) 16%, transparent), transparent 70%),
+    var(--bg);
+}
+
+.caja { width: min(520px, 100%); }
+
+.marca { display: block; height: 58px; width: auto; margin-bottom: 26px; mix-blend-mode: lighten; }
+
+h1 { font-family: 'Outfit', sans-serif; font-size: clamp(34px, 7vw, 46px); line-height: 1.05; font-weight: 800; margin: 0 0 10px; }
+.lema { color: var(--text-dim); margin: 0 0 16px; font-size: 15px; }
+
+.deportes {
+  display: flex; gap: 6px; margin-bottom: 30px;
+  span { width: 34px; height: 6px; border-radius: 999px; }
+}
+
+h2 { font-size: 15px; color: var(--text-dim); font-weight: 700; margin: 0 0 12px; }
+
+.opciones { display: flex; flex-direction: column; gap: 10px; }
+
+.opcion {
+  display: flex; align-items: center; gap: 14px; width: 100%; text-align: left; cursor: pointer;
+  padding: 16px; border-radius: 16px; border: 1px solid var(--border); background: var(--surface); color: var(--text);
+  transition: border-color 0.15s, transform 0.15s, background 0.15s;
+
+  &:hover { border-color: var(--brand); background: var(--surface-2); transform: translateY(-1px); }
+  &:hover .opcion-flecha { color: var(--brand); transform: translateX(3px); }
+}
+
+.opcion-icono {
+  width: 46px; height: 46px; border-radius: 12px; display: grid; place-items: center; flex: none;
+  background: var(--brand-soft); color: var(--brand);
+  app-icono { width: 24px; height: 24px; }
+}
+
+.opcion-texto { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+.opcion-titulo { font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 18px; }
+.opcion-desc { font-size: 13.5px; color: var(--text-dim); }
+.opcion-precio { font-size: 12px; font-weight: 800; color: var(--brand); margin-top: 2px; }
+.opcion-flecha { color: var(--text-faint); transition: transform 0.15s, color 0.15s; }
+
+.nota { margin: 22px 0 0; font-size: 12px; color: var(--text-faint); text-align: center; }

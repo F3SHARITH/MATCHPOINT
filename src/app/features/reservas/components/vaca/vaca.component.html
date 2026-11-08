@@ -1,0 +1,32 @@
+<div class="vaca">
+  <div class="vaca-cabecera">
+    <b>La vaca · {{ cuota() | currency: 'COP' : 'symbol-narrow' : '1.0-0' }} cada uno</b>
+    <span>{{ listos() }} de {{ jugadores().length }} listos</span>
+  </div>
+  <div class="progreso"><i [style.width.%]="(listos() / jugadores().length) * 100"></i></div>
+
+  @if (deben().length) {
+    <p class="faltan">Faltan: {{ deben().join(', ') }}</p>
+  }
+
+  @for (jugador of jugadores(); track $index; let i = $index) {
+    <div class="jugador">
+      <input
+        class="nombre"
+        [value]="jugador.nombre"
+        [attr.aria-label]="'Nombre del jugador ' + (i + 1)"
+        (change)="renombrar(i, $any($event.target).value)" />
+      <div class="estados">
+        @for (opcion of opciones; track opcion.estado) {
+          <button
+            type="button"
+            [class.activo]="jugador.estado === opcion.estado"
+            [class.debe]="opcion.estado === 'debe'"
+            (click)="marcar(i, opcion.estado)">
+            {{ opcion.texto }}
+          </button>
+        }
+      </div>
+    </div>
+  }
+</div>

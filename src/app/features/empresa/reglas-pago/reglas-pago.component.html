@@ -1,0 +1,28 @@
+<section class="panel">
+  <h2>Reglas de pago</h2>
+
+  <span class="etiqueta">¿Cuándo pides anticipo?</span>
+  <div class="opciones">
+    @for (opcion of opciones; track opcion.id) {
+      <button type="button" class="eleccion" [class.activo]="reglas.anticipo === opcion.id" (click)="cambiar({ anticipo: opcion.id })">
+        {{ opcion.titulo }}<small>{{ opcion.detalle }}</small>
+      </button>
+    }
+  </div>
+
+  @if (reglas.anticipo !== 'nunca') {
+    <span class="etiqueta">¿De cuánto?</span>
+    <div class="opciones">
+      @for (porcentaje of porcentajes; track porcentaje) {
+        <button type="button" class="eleccion porcentaje" [class.activo]="reglas.porcentaje === porcentaje" (click)="cambiar({ porcentaje })">
+          {{ porcentaje }} %
+        </button>
+      }
+    </div>
+  }
+
+  <p class="nota">
+    Los jugadores con {{ reservasParaConfianza }} reservas cumplidas y ninguna falla nunca pagan anticipo.
+    Si marcas a alguien como "No llegó", pierde esa confianza.
+  </p>
+</section>

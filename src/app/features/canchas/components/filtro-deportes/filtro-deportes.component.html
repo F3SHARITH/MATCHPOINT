@@ -1,0 +1,21 @@
+<div class="chip-row">
+  <button
+    type="button"
+    class="chip"
+    style="--c: var(--matchpoint)"
+    [class.active]="canchasService.sportFilter() === null"
+    (click)="seleccionar(null)">
+    <span class="icono" [innerHTML]="iconoTodos | svgSeguro"></span>Todos
+  </button>
+
+  @for (deporte of canchasService.deportes(); track deporte.id) {
+    <button
+      type="button"
+      class="chip"
+      [style.--c]="deporte.hex"
+      [class.active]="canchasService.sportFilter() === deporte.id"
+      (click)="seleccionar(deporte.id)">
+      <span class="icono" [innerHTML]="iconos[deporte.id] | svgSeguro"></span>{{ deporte.nombre }}
+    </button>
+  }
+</div>

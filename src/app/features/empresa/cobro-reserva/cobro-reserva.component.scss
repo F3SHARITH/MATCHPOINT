@@ -1,0 +1,21 @@
+h2 { font-family: 'Outfit', sans-serif; font-size: 21px; margin: 0; }
+.sub { margin: 4px 0 14px; font-size: 13px; color: var(--text-dim); }
+
+.cuentas {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 12px;
+
+  div { display: flex; flex-direction: column; gap: 2px; padding: 10px; border-radius: 10px; background: var(--surface); }
+  span { font-size: 11.5px; color: var(--text-dim); font-weight: 700; }
+  b { font-family: 'Outfit', sans-serif; font-size: 17px; }
+  .falta { background: var(--brand-soft); b { color: var(--brand); } }
+}
+
+.etiqueta { display: block; margin: 14px 0 6px; font-size: 12.5px; font-weight: 800; color: var(--text-dim); }
+
+.opciones { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.opciones .eleccion { align-items: center; text-align: center; font-size: 12.5px; }
+
+.nota-caja { margin: 12px 0 0; }
+
+.botones { display: flex; justify-content: flex-end; gap: 8px; margin-top: 18px; }
+.boton-grande { margin-top: 14px; }

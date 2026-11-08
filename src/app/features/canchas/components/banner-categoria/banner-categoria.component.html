@@ -1,0 +1,49 @@
+@let banner = canchasService.bannerActual();
+@let stats = canchasService.estadisticasCategoria();
+@let deporte = deporteActivo;
+
+<section class="hero">
+  <div class="hero-foto" [style.background-image]="'url(' + banner.imagen + '?auto=format&fit=crop&w=1400&q=70)'"></div>
+  <div class="hero-velo"></div>
+
+  <div class="hero-contenido">
+    <span class="eyebrow">
+      <span class="eyebrow-icono" [innerHTML]="iconoDeporte | svgSeguro"></span>
+      @if (deporte) {
+        {{ stats.totalCanchas }} canchas en Yopal
+      } @else if (primerNombre()) {
+        Hola, {{ primerNombre() }}
+      } @else {
+        MatchPoint · Yopal, Casanare
+      }
+    </span>
+
+    <h1>
+      @if (deporte) {
+        Canchas de <span class="acento">{{ deporte.nombre }}</span>
+      } @else {
+        Tu próximo partido <span class="acento">comienza aquí</span>
+      }
+    </h1>
+    <p class="descripcion">{{ banner.descripcion }}</p>
+
+    <div class="stats">
+      <div class="stat"><b>{{ stats.totalCanchas }}</b><span>Canchas</span></div>
+      <div class="stat"><b>{{ stats.empresasAsociadas }}</b><span>Empresas</span></div>
+      <div class="stat"><b>★ {{ stats.calificacionPromedio.toFixed(1) }}</b><span>Calificación</span></div>
+      <div class="stat"><b>${{ stats.precioPromedio | number: '1.0-0' : 'es-CO' }}</b><span>Promedio por hora</span></div>
+    </div>
+  </div>
+
+  <div class="caracteristicas">
+    @for (item of banner.caracteristicas; track item.titulo) {
+      <div class="caracteristica">
+        <span class="caracteristica-icono" [innerHTML]="iconoCaracteristica(item.icono) | svgSeguro"></span>
+        <div>
+          <b>{{ item.titulo }}</b>
+          <small>{{ item.subtitulo }}</small>
+        </div>
+      </div>
+    }
+  </div>
+</section>

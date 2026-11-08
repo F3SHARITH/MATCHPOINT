@@ -1,0 +1,22 @@
+.chip-row {
+  display: flex; gap: 8px; overflow-x: auto; padding: 2px 2px 4px;
+  &::-webkit-scrollbar { display: none; }
+}
+
+.chip {
+  --c: var(--brand);
+  flex: none; display: flex; align-items: center; gap: 8px;
+  padding: 10px 16px 10px 12px; border-radius: 14px;
+  border: 1px solid var(--border); background: var(--surface); color: var(--text);
+  font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 14px; cursor: pointer;
+  transition: border-color .15s, background .15s, color .15s; white-space: nowrap;
+
+  .icono { width: 20px; height: 20px; display: inline-flex; color: var(--c); ::ng-deep svg { width: 100%; height: 100%; } }
+
+  &:hover { border-color: var(--c); }
+
+  &.active {
+    border-color: var(--c); color: var(--c);
+    background: color-mix(in srgb, var(--c) 14%, var(--surface));
+  }
+}

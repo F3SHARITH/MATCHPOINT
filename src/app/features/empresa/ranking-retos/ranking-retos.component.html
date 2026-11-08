@@ -1,0 +1,20 @@
+<section class="panel">
+  <h2>Ranking de retos</h2>
+
+  @if (ranking().length) {
+    @if (ultimo()) {
+      <p class="ultimo">Último: {{ ultimo() }}</p>
+    }
+    <ol>
+      @for (fila of ranking(); track fila.equipo; let i = $index) {
+        <li>
+          <span class="puesto" [class.primero]="i === 0">{{ i + 1 }}</span>
+          <span class="equipo">{{ fila.equipo }}</span>
+          <span class="marcador"><b>{{ fila.ganados }}</b> de {{ fila.jugados }} ganados</span>
+        </li>
+      }
+    </ol>
+  } @else {
+    <p class="ultimo">Todavía no hay retos jugados en tus canchas.</p>
+  }
+</section>

@@ -1,0 +1,71 @@
+<ng-template #marca>
+  <a class="marca" routerLink="/">
+    <img class="marca-img" src="logo-matchpoint.png" alt="MatchPoint · Reserva. Juega. Conecta." />
+  </a>
+</ng-template>
+
+<ng-template #cuenta>
+  <div class="cuenta">
+    <div class="cuenta-persona">
+      <span class="avatar">{{ sesion.iniciales() }}</span>
+      <span>
+        <span class="cuenta-nombre">{{ sesion.usuario()?.nombre }}</span>
+        <span class="cuenta-rol">{{ nombreRol[sesion.rol()!] }}</span>
+      </span>
+    </div>
+
+    <div class="demo">
+      <span class="demo-titulo">Modo demo · ver como</span>
+      <div class="demo-roles">
+        @for (rol of roles; track rol) {
+          <button type="button" [class.activo]="sesion.rol() === rol" (click)="verComo(rol)">{{ nombreRol[rol] }}</button>
+        }
+      </div>
+    </div>
+
+    <button type="button" class="salir" (click)="salir()">
+      <app-icono nombre="salir" /> Salir
+    </button>
+  </div>
+</ng-template>
+
+<div class="shell">
+  <aside class="lateral">
+    <ng-container [ngTemplateOutlet]="marca" />
+
+    <nav class="menu" aria-label="Menú principal">
+      @for (item of menu(); track item.ruta) {
+        <a [routerLink]="item.ruta" routerLinkActive="activo">
+          <app-icono [nombre]="item.icono" />{{ item.texto }}
+        </a>
+      }
+    </nav>
+
+    <ng-container [ngTemplateOutlet]="cuenta" />
+  </aside>
+
+  <header class="cabecera-movil">
+    <ng-container [ngTemplateOutlet]="marca" />
+    <button type="button" class="avatar" (click)="cuentaAbierta.set(!cuentaAbierta())" aria-label="Mi cuenta">
+      {{ sesion.iniciales() }}
+    </button>
+    @if (cuentaAbierta()) {
+      <div class="cuenta-flotante">
+        <ng-container [ngTemplateOutlet]="cuenta" />
+      </div>
+    }
+  </header>
+
+  <main class="contenido">
+    <router-outlet />
+  </main>
+
+  <nav class="barra-inferior" aria-label="Menú principal">
+    @for (item of menu(); track item.ruta) {
+      <a [routerLink]="item.ruta" routerLinkActive="activo">
+        <app-icono [nombre]="item.icono" />
+        <span>{{ item.texto }}</span>
+      </a>
+    }
+  </nav>
+</div>

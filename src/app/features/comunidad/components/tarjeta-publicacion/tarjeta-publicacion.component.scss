@@ -1,0 +1,76 @@
+:host { display: block; }
+
+.publicacion {
+  --c: var(--brand);
+  display: flex; flex-direction: column; gap: 12px; padding: 16px 18px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 18px;
+}
+
+header { display: flex; align-items: center; gap: 10px; }
+
+.avatar {
+  width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; flex: none;
+  background: var(--surface-2); border: 1.5px solid var(--c); font-weight: 800; font-size: 13px;
+  &.empresa { border-radius: 12px; background: var(--brand); color: var(--brand-ink); border: none; }
+}
+
+.quien {
+  flex: 1; min-width: 0; display: flex; flex-direction: column;
+  b { font-size: 14.5px; }
+  small { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-faint); }
+}
+
+.tipo {
+  padding: 4px 10px; border-radius: 999px; font-size: 11.5px; font-weight: 800; white-space: nowrap;
+  color: var(--text-dim); background: var(--surface-2);
+
+  &.faltan { color: var(--c); background: color-mix(in srgb, var(--c) 16%, transparent); }
+  &.busco-equipo { color: var(--tenis); background: color-mix(in srgb, var(--tenis) 16%, transparent); }
+  &.evento { color: var(--warning); background: color-mix(in srgb, var(--warning) 16%, transparent); }
+}
+
+.icono-boton {
+  border: none; background: none; color: var(--text-faint); cursor: pointer; padding: 4px; border-radius: 8px;
+  &:hover { color: var(--danger); background: var(--surface-2); }
+  app-icono { width: 18px; height: 18px; }
+}
+
+.texto { margin: 0; font-size: 14.5px; line-height: 1.55; white-space: pre-line; }
+
+.partido {
+  display: flex; flex-direction: column; gap: 6px; padding: 12px 14px; border-radius: 12px;
+  background: color-mix(in srgb, var(--c) 7%, var(--bg-soft)); border: 1px solid color-mix(in srgb, var(--c) 30%, var(--border));
+}
+.partido-cabecera { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 2px; }
+.cuantos { font-family: 'Outfit', sans-serif; font-size: 19px; font-weight: 800; color: var(--c); }
+.deporte { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: var(--text-dim); }
+.deporte.suelto { align-self: flex-start; }
+.linea {
+  display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-dim);
+  app-icono { width: 16px; height: 16px; color: var(--c); }
+}
+
+.cupos {
+  display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: 4px;
+  i { width: 14px; height: 14px; border-radius: 50%; border: 1.5px dashed var(--c); }
+  i.lleno { background: var(--c); border-style: solid; }
+  small { font-size: 12px; color: var(--text-dim); margin-left: 4px; }
+}
+
+footer { display: flex; align-items: center; gap: 6px; padding-top: 10px; border-top: 1px solid var(--border-soft); }
+.accion {
+  display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 999px; cursor: pointer;
+  border: none; background: transparent; color: var(--text-dim); font-size: 13px; font-weight: 700;
+  app-icono { width: 18px; height: 18px; }
+  &:hover { background: var(--surface-2); }
+  &.activo { color: #FF5B7A; }
+}
+.espacio { flex: 1; }
+.nota { font-size: 12.5px; color: var(--text-faint); font-weight: 700; }
+
+.comentarios { display: flex; flex-direction: column; gap: 8px; }
+.comentario {
+  padding: 8px 12px; border-radius: 12px; background: var(--bg-soft); font-size: 13.5px; line-height: 1.45;
+  small { display: block; font-size: 11px; color: var(--text-faint); margin-top: 2px; }
+}
+.comentar { display: flex; gap: 6px; .boton { padding: 0 12px; } }

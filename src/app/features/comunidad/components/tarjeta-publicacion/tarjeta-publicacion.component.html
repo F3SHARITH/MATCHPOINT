@@ -1,0 +1,96 @@
+<article class="publicacion" [style.--c]="deporte?.hex ?? 'var(--brand)'">
+  <header>
+    <span class="avatar" [class.empresa]="publicacion.rolAutor === 'empresa'">{{ iniciales }}</span>
+    <div class="quien">
+      <b>{{ publicacion.autor }}</b>
+      <small>
+        @if (publicacion.rolAutor === 'empresa') { <span class="insignia">Empresa</span> }
+        {{ haceCuanto(publicacion.creado) }}
+      </small>
+    </div>
+    <span class="tipo" [class]="'tipo ' + publicacion.tipo">{{ textoTipo[publicacion.tipo] }}</span>
+    @if (puedeBorrar) {
+      <button type="button" class="icono-boton" (click)="comunidad.eliminar(publicacion.id)" aria-label="Eliminar publicación">
+        <app-icono nombre="basura" />
+      </button>
+    }
+  </header>
+
+  <p class="texto">{{ publicacion.texto }}</p>
+
+  @if (publicacion.busqueda; as busqueda) {
+    <div class="partido">
+      <div class="partido-cabecera">
+        <span class="cuantos">{{ cupos > 0 ? (cupos === 1 ? 'Falta 1' : 'Faltan ' + cupos) : '¡Completos!' }}</span>
+        <span class="insignia">{{ textoNivel[busqueda.nivel] }}</span>
+        @if (deporte; as d) {
+          <span class="deporte"><span class="punto-deporte" [style.background]="d.hex"></span>{{ d.nombre }}</span>
+        }
+      </div>
+      @if (busqueda.partido; as partido) {
+        <div class="linea"><app-icono nombre="ubicacion" />{{ nombreCancha(partido.canchaId) }}</div>
+        <div class="linea">
+          <app-icono nombre="calendario" />{{ etiquetaDia(partido.fecha) }} {{ fechaCorta(partido.fecha) }} · {{ horaTexto(partido.hora) }}
+        </div>
+      }
+      @if (busqueda.cuota) {
+        <div class="linea"><app-icono nombre="dinero" />Cada uno pone {{ busqueda.cuota | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</div>
+      }
+      <div class="cupos">
+        @for (i of cuposDibujo; track i) {
+          <i [class.lleno]="i < publicacion.apuntados.length"></i>
+        }
+        @if (publicacion.apuntados.length) {
+          <small>Se apuntaron: {{ nombresApuntados() }}</small>
+        }
+      </div>
+    </div>
+  } @else if (deporte; as d) {
+    <span class="deporte suelto"><span class="punto-deporte" [style.background]="d.hex"></span>{{ d.nombre }}</span>
+  }
+
+  <footer>
+    <button type="button" class="accion" [class.activo]="comunidad.meGustaMio(publicacion)" (click)="comunidad.toggleMeGusta(publicacion.id)"
+      aria-label="Me gusta">
+      <app-icono nombre="corazon" />{{ publicacion.meGusta.length }}
+    </button>
+    <button type="button" class="accion" (click)="comentariosAbiertos.set(!comentariosAbiertos())" aria-label="Comentarios">
+      <app-icono nombre="mensaje" />{{ publicacion.comentarios.length }}
+    </button>
+    <span class="espacio"></span>
+
+    @if (publicacion.busqueda) {
+      @if (comunidad.esMia(publicacion)) {
+        <span class="nota">Tu publicación</span>
+      } @else if (comunidad.estoyApuntado(publicacion)) {
+        <button type="button" class="boton boton-secundario boton-chico" (click)="comunidad.salirme(publicacion.id)">Ya estás · Salirme</button>
+      } @else if (cupos > 0 && !yaSeJugo) {
+        <button type="button" class="boton boton-primario boton-chico" (click)="comunidad.apuntarme(publicacion.id)">Me apunto</button>
+      } @else {
+        <span class="nota">{{ yaSeJugo ? 'Ya se jugó' : 'Completo' }}</span>
+      }
+    } @else if (!comunidad.esMia(publicacion)) {
+      <button type="button" class="boton boton-secundario boton-chico" (click)="responder()">
+        {{ publicacion.tipo === 'evento' ? 'Me interesa' : 'Responder' }}
+      </button>
+    }
+  </footer>
+
+  @if (comentariosAbiertos()) {
+    <div class="comentarios">
+      @for (comentario of publicacion.comentarios; track $index) {
+        <div class="comentario">
+          <b>{{ comentario.autor }}</b> {{ comentario.texto }}
+          <small>{{ haceCuanto(comentario.creado) }}</small>
+        </div>
+      }
+      <div class="comentar">
+        <input class="entrada" placeholder="Escribe un comentario…" aria-label="Escribe un comentario"
+          [value]="nuevoComentario()" (input)="nuevoComentario.set($any($event.target).value)" (keydown.enter)="comentar()" />
+        <button type="button" class="boton boton-primario" (click)="comentar()" [disabled]="!nuevoComentario().trim()" aria-label="Enviar comentario">
+          <app-icono nombre="enviar" />
+        </button>
+      </div>
+    </div>
+  }
+</article>

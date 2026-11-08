@@ -1,0 +1,36 @@
+<main class="entrar">
+  <div class="caja">
+    <img class="marca" src="logo-matchpoint.png" alt="MatchPoint · Reserva. Juega. Conecta." />
+
+    <h1>Reserva tu cancha<br /><span class="acento">en 3 clics.</span></h1>
+    <p class="lema">Fútbol, vóley playa, baloncesto, tenis y pádel en Yopal.</p>
+
+    <div class="deportes" aria-hidden="true">
+      @for (deporte of deportes; track deporte) {
+        <span [style.background]="'var(--' + deporte + ')'"></span>
+      }
+    </div>
+
+    <h2>¿Cómo vas a usar MatchPoint?</h2>
+
+    <div class="opciones">
+      @for (opcion of opciones; track opcion.rol) {
+        <button type="button" class="opcion" (click)="entrar(opcion.rol)">
+          <span class="opcion-icono"><app-icono [nombre]="opcion.icono" /></span>
+          <span class="opcion-texto">
+            <span class="opcion-titulo">{{ opcion.titulo }}</span>
+            <span class="opcion-desc">{{ opcion.descripcion }}</span>
+            @if (opcion.rol === 'empresa') {
+              <span class="opcion-precio">
+                Plan empresa: {{ plataforma.valorMensualidad() | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}/mes
+              </span>
+            }
+          </span>
+          <app-icono class="opcion-flecha" nombre="flecha" />
+        </button>
+      }
+    </div>
+
+    <p class="nota">Modo demo: todavía no hay contraseñas. Cuando exista el backend, aquí irá el inicio de sesión.</p>
+  </div>
+</main>

@@ -1,0 +1,51 @@
+<div class="listo">
+  <span class="listo-icono"><app-icono nombre="check" /></span>
+  <h3>¡Listo, reservaste!</h3>
+
+  <div class="codigo">
+    <span>Tu código</span>
+    <b>{{ reserva.codigo }}</b>
+    <small>Muéstralo al llegar. También sirve para cancelar.</small>
+  </div>
+
+  <p>
+    <b>{{ etiquetaDia(reserva.fecha) }}</b>, {{ fechaLarga(reserva.fecha) }} a las <b>{{ horaTexto(reserva.hora) }}</b>
+  </p>
+
+  <p class="nota-caja">
+    @switch (reserva.estado) {
+      @case ('pagada') {
+        Pagaste todo: <b>{{ reserva.precio | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</b>. Solo llega y juega.
+      }
+      @case ('confirmada') {
+        @if (totalPagado(reserva) > 0) {
+          Dejaste <b>{{ totalPagado(reserva) | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</b> de anticipo.
+          En la cancha pagan <b>{{ saldoDe(reserva) | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</b>.
+        } @else {
+          Tienes nivel de confianza: pagan <b>{{ reserva.precio | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</b> en la cancha.
+        }
+      }
+      @default {
+        Quedó apartada. Pagan <b>{{ reserva.precio | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</b> en la cancha.
+        Si no van a ir, cancela con tu código para no perder el nivel de confianza.
+      }
+    }
+  </p>
+
+  @if (reserva.modalidad !== 'organizador') {
+    <div class="grupo">
+      <span class="grupo-titulo">Avísale al grupo</span>
+      <pre class="mensaje">{{ mensaje }}</pre>
+      <div class="grupo-botones">
+        <a class="boton boton-primario" [href]="linkGrupo" target="_blank" rel="noopener">Enviar por WhatsApp</a>
+        <button type="button" class="boton boton-secundario" (click)="copiar()">{{ copiado() ? 'Copiado' : 'Copiar' }}</button>
+      </div>
+      @if (reserva.modalidad === 'vaca') {
+        <small>En <b>Mis reservas</b> llevas la cuenta de quién ya pagó.</small>
+      }
+    </div>
+  }
+
+  <a class="boton boton-primario boton-grande" routerLink="/reservas">Ver mis reservas</a>
+  <button type="button" class="boton boton-secundario boton-grande" (click)="cerrar.emit()">Seguir buscando</button>
+</div>

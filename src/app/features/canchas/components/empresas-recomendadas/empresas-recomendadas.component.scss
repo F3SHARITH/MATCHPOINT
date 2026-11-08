@@ -1,0 +1,26 @@
+:host { display: block; margin-top: 30px; }
+
+h2 { font-family: 'Outfit', sans-serif; font-size: 20px; margin: 0 0 12px; }
+
+.fila { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 10px; }
+
+.empresa {
+  --c: var(--brand);
+  display: flex; align-items: center; gap: 12px; padding: 12px; text-align: left; cursor: pointer;
+  border: 1px solid var(--border); border-radius: 16px; background: var(--surface); color: var(--text);
+  transition: border-color .15s, transform .15s;
+  &:hover { border-color: var(--c); transform: translateY(-1px); }
+}
+
+.logo {
+  width: 46px; height: 46px; flex: none; border-radius: 50%; display: grid; place-items: center;
+  font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 15px;
+  background: color-mix(in srgb, var(--c) 20%, var(--surface-2)); color: var(--c); border: 2px solid var(--c);
+}
+
+.datos {
+  min-width: 0; display: flex; flex-direction: column; gap: 2px;
+  b { font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  small { font-size: 12px; color: var(--text-dim); }
+}
+.estrella { color: #F2C94C; }

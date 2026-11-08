@@ -1,0 +1,71 @@
+<div class="page">
+  <div class="page-head">
+    <div>
+      <h1>Comunidad</h1>
+      <p>Encuentra con quién jugar en Yopal: publica que te faltan jugadores o únete a un partido.</p>
+    </div>
+  </div>
+
+  <div class="columnas">
+    <div class="muro">
+      <app-nueva-publicacion [reservaInicial]="reservaInicial" (publicada)="filtro.set('todas')" />
+
+      <div class="filtros">
+        <div class="pestanas" role="tablist">
+          @for (f of filtros; track f.id) {
+            <button type="button" role="tab" [class.activo]="filtro() === f.id" [attr.aria-selected]="filtro() === f.id" (click)="filtro.set(f.id)">
+              {{ f.texto }}
+            </button>
+          }
+        </div>
+        <div class="deportes">
+          @for (d of canchasService.deportes(); track d.id) {
+            <button type="button" class="punto" [style.--c]="d.hex" [class.activo]="deporte() === d.id"
+              (click)="deporte.set(deporte() === d.id ? null : d.id)" [attr.aria-label]="'Solo ' + d.nombre" [attr.title]="d.nombre">
+            </button>
+          }
+        </div>
+      </div>
+
+      @for (publicacion of lista(); track publicacion.id) {
+        <app-tarjeta-publicacion [publicacion]="publicacion" />
+      } @empty {
+        <div class="panel vacio">
+          <h3>No hay publicaciones aquí</h3>
+          <p>Prueba con otro filtro, o sé el primero en publicar.</p>
+        </div>
+      }
+    </div>
+
+    <aside class="lado">
+      <section class="panel">
+        <h2>Buscan jugadores</h2>
+        @for (p of buscanAhora(); track p.id) {
+          <button type="button" class="busca" [style.--c]="colorDe(p)" (click)="verFaltan()">
+            <span class="busca-cupos">{{ cuposLibres(p) }}</span>
+            <span class="busca-texto">
+              <b>{{ nombreCancha(p) }}</b>
+              @if (p.busqueda?.partido; as partido) {
+                <small>{{ etiquetaDia(partido.fecha) }} · {{ horaTexto(partido.hora) }}</small>
+              } @else {
+                <small>{{ p.autor }}</small>
+              }
+            </span>
+            <app-icono nombre="flecha" />
+          </button>
+        } @empty {
+          <p class="nada">Ahora mismo nadie está buscando jugadores.</p>
+        }
+      </section>
+
+      <section class="panel como">
+        <h2>Así funciona</h2>
+        <ol>
+          <li><b>Publica</b> cuántos te faltan, el deporte y el nivel.</li>
+          <li>Los interesados tocan <b>Me apunto</b> y ven la cancha y la hora.</li>
+          <li>Si viene de una reserva con vaca, <b>entran solos a tu vaca</b>.</li>
+        </ol>
+      </section>
+    </aside>
+  </div>
+</div>
