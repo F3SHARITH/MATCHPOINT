@@ -1,0 +1,35 @@
+<section class="panel">
+  <h2>Caja del día</h2>
+
+  <div class="efectivo">
+    <span>Efectivo que debe haber en caja</span>
+    <b>{{ efectivo() | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</b>
+  </div>
+
+  @for (linea of porMetodo(); track linea.nombre) {
+    <div class="fila"><span>{{ linea.nombre }}</span><b>{{ linea.total | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</b></div>
+  } @empty {
+    <p class="vacia">Todavía no han entrado pagos este día.</p>
+  }
+  @if (anticipos()) {
+    <div class="fila sub"><span>De eso, anticipos en línea</span><b>{{ anticipos() | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</b></div>
+  }
+  <div class="fila total"><span>Total recibido</span><b>{{ total() | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</b></div>
+  <div class="fila"><span>Falta por cobrar</span><b class="aviso">{{ porCobrar() | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</b></div>
+  <div class="fila"><span>No llegaron</span><b [class.mal]="noLlegaron() > 0">{{ noLlegaron() }}</b></div>
+
+  @if (porEmpleado().length) {
+    <h3>Quién recibió la plata</h3>
+    @for (persona of porEmpleado(); track persona.nombre) {
+      <div class="fila">
+        <span>{{ persona.nombre }}</span>
+        <span class="detalle">
+          <b>{{ persona.total | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</b>
+          @if (persona.efectivo) {
+            <small>{{ persona.efectivo | currency: 'COP' : 'symbol-narrow' : '1.0-0' }} en efectivo</small>
+          }
+        </span>
+      </div>
+    }
+  }
+</section>

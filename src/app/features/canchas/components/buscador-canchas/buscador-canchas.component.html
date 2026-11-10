@@ -1,0 +1,56 @@
+<div class="search-wrap">
+  <div class="search-box" [class.focused]="panelAbierto()">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+      <circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.6" y2="16.6"/>
+    </svg>
+    <input
+      type="text"
+      placeholder="Buscar deporte, cancha, empresa o zona…"
+      autocomplete="off"
+      role="combobox"
+      [attr.aria-expanded]="panelAbierto()"
+      [value]="texto()"
+      (input)="onInput($any($event.target).value)"
+      (focus)="onFocus()"
+      (blur)="onBlur()"
+      (keydown)="onKeydown($event)" />
+    @if (texto()) {
+      <button type="button" class="search-clear" (click)="limpiar()" aria-label="Limpiar búsqueda">✕</button>
+    }
+  </div>
+
+  @if (panelAbierto()) {
+    <div class="search-panel" role="listbox">
+      @if (grupos().length === 0) {
+        <div class="search-empty">
+          No encontramos nada para "<b>{{ texto() }}</b>".<br />
+          Prueba con otro deporte, cancha, empresa o zona.
+        </div>
+      } @else {
+        @for (grupo of grupos(); track grupo.etiqueta) {
+          <div class="search-group">
+            <div class="search-group-label">{{ grupo.etiqueta }}</div>
+            @for (item of grupo.items; track item.id) {
+              <div
+                class="search-item"
+                [class.active-item]="indiceDe(item) === indiceActivo()"
+                role="option"
+                (mousedown)="seleccionar(item)">
+                <span class="swatch" [style.background]="item.color"></span>
+                <span class="main">
+                  <div class="title" [innerHTML]="resaltar(item.titulo)"></div>
+                  <div class="meta">{{ item.meta }}</div>
+                </span>
+              </div>
+            }
+            @if (grupo.masResultados) {
+              <div class="search-item search-item--muted">
+                Ver {{ grupo.masResultados }} resultado{{ grupo.masResultados === 1 ? '' : 's' }} más en {{ grupo.etiqueta.toLowerCase() }}
+              </div>
+            }
+          </div>
+        }
+      }
+    </div>
+  }
+</div>

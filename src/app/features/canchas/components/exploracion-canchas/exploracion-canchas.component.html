@@ -1,0 +1,105 @@
+<div class="app">
+
+  @if (rol() !== 'usuario') {
+    <div class="saludo">
+      @if (rol() === 'empresa') {
+        <h1>Así ven tus canchas los jugadores</h1>
+        <p>Tus canchas aparecen marcadas como <b>Tuya</b>. Para manejar reservas, ve a <b>Mi panel</b>.</p>
+      } @else {
+        <h1>Todas las canchas publicadas</h1>
+        <p>Las canchas de empresas suspendidas no aparecen aquí ni para los jugadores.</p>
+      }
+    </div>
+  }
+
+  <div class="distribucion" [class.con-lateral]="rol() === 'usuario'">
+    <div class="principal">
+      <app-banner-categoria />
+
+      <div class="buscar">
+        <app-buscador-canchas />
+
+        <div class="filtros">
+          <label class="filtro">
+            <app-icono nombre="ubicacion" />
+            <span class="filtro-texto">
+              <small>Zona</small>
+              <select (change)="canchasService.setZona($any($event.target).value)" aria-label="Zona">
+                <option value="">Toda Yopal</option>
+                @for (zona of canchasService.zonas(); track zona) {
+                  <option [value]="zona">{{ zona }}</option>
+                }
+              </select>
+            </span>
+          </label>
+
+          <label class="filtro">
+            <app-icono nombre="dinero" />
+            <span class="filtro-texto">
+              <small>Precio por hora</small>
+              <select (change)="canchasService.setPrecioMax(+$any($event.target).value)" aria-label="Precio máximo por hora">
+                <option value="0">Cualquier precio</option>
+                <option value="50000">Hasta $50.000</option>
+                <option value="70000">Hasta $70.000</option>
+                <option value="100000">Hasta $100.000</option>
+              </select>
+            </span>
+          </label>
+
+          <label class="filtro">
+            <app-icono nombre="reloj" />
+            <span class="filtro-texto">
+              <small>Disponibilidad</small>
+              <span>Solo disponibles ahora</span>
+            </span>
+            <input type="checkbox" (change)="canchasService.setSoloDisponibles($any($event.target).checked)" />
+            <span class="track"></span>
+          </label>
+        </div>
+      </div>
+
+      <app-filtro-deportes />
+
+      <div class="seccion-titulo">
+        <h2>{{ tituloGrid() }}</h2>
+        <span class="conteo">
+          <b>{{ canchasService.canchasFiltradas().length }}</b>
+          {{ canchasService.canchasFiltradas().length === 1 ? 'cancha' : 'canchas' }}
+        </span>
+        @if (canchasService.query()) {
+          <button type="button" class="quitar" (click)="canchasService.setQuery('')">"{{ canchasService.query() }}" ✕</button>
+        }
+      </div>
+
+      <div class="grid">
+        @for (cancha of canchasService.canchasFiltradas(); track cancha.id) {
+          <app-tarjeta-cancha
+            [cancha]="cancha"
+            [modo]="rol()"
+            [esFavorita]="esFavorita(cancha.id)"
+            (reservar)="reservar($event)"
+            (favorito)="toggleFavorita($event)"
+            (gestionar)="gestionar()" />
+        } @empty {
+          <div class="empty-state">
+            <h3>No hay canchas para estos filtros</h3>
+            <p>Prueba quitando el filtro de zona o precio, o elige otro deporte.</p>
+          </div>
+        }
+      </div>
+
+      <app-empresas-recomendadas />
+    </div>
+
+    @if (rol() === 'usuario') {
+      <aside class="lateral">
+        <app-lateral-jugador />
+      </aside>
+    }
+  </div>
+
+  @if (canchaAReservar(); as cancha) {
+    <app-reserva-rapida [cancha]="cancha" (cerrar)="canchaAReservar.set(null)" />
+  }
+
+</div>

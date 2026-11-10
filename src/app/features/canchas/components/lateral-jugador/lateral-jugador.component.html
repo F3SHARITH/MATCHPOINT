@@ -1,0 +1,64 @@
+<section class="panel perfil">
+  <div class="perfil-fila">
+    <span class="avatar">{{ sesion.iniciales() }}</span>
+    <div>
+      <b>{{ sesion.usuario()?.nombre }}</b>
+      <span class="nivel" [class.ok]="confianza().esDeConfianza">
+        {{ confianza().esDeConfianza ? 'De confianza' : 'Nivel ' + confianza().cumplidas + ' de ' + reservasParaConfianza }}
+      </span>
+    </div>
+  </div>
+  <div class="puntos">
+    @for (paso of pasos; track paso) {
+      <i [class.on]="paso < confianza().cumplidas"></i>
+    }
+  </div>
+  <small>
+    @if (confianza().esDeConfianza) {
+      Cumples tus reservas: nunca te pedimos anticipo.
+    } @else {
+      Cumple {{ reservasParaConfianza - confianza().cumplidas }} reservas más y ya no pagas anticipo.
+    }
+  </small>
+</section>
+
+<section class="panel">
+  <h2>Mis próximas reservas <a routerLink="/reservas">Ver todas</a></h2>
+  @for (reserva of proximas(); track reserva.id) {
+    <a class="reserva" routerLink="/reservas">
+      <span class="foto" [style.background-image]="fotoDe(reserva)"></span>
+      <span class="texto">
+        <b>{{ cancha(reserva)?.nombre }}</b>
+        <small>{{ empresa(reserva) }}</small>
+        <small>{{ etiquetaDia(reserva.fecha) }} · {{ horaTexto(reserva.hora) }}</small>
+      </span>
+      <span class="estado" [class.ok]="reserva.estado !== 'apartada'" [class.aviso]="reserva.estado === 'apartada'">
+        {{ textoEstado[reserva.estado] }}
+      </span>
+    </a>
+  } @empty {
+    <p class="nada">Todavía no tienes reservas. Elige una cancha y reserva en 3 clics.</p>
+  }
+</section>
+
+<section class="panel">
+  <h2>Buscan jugadores <a routerLink="/comunidad">Ver todo</a></h2>
+  @for (p of buscan(); track p.id) {
+    <div class="busca" [style.--c]="colorDe(p)">
+      <span class="cupos">{{ cuposLibres(p) }}</span>
+      <span class="texto">
+        <b>{{ tituloBusqueda(p) }}</b>
+        @if (p.busqueda?.partido; as partido) {
+          <small>{{ etiquetaDia(partido.fecha) }} · {{ horaTexto(partido.hora) }}</small>
+        }
+      </span>
+      @if (comunidad.estoyApuntado(p)) {
+        <span class="listo">Vas</span>
+      } @else {
+        <button type="button" class="boton boton-primario boton-chico" (click)="comunidad.apuntarme(p.id)">Me apunto</button>
+      }
+    </div>
+  } @empty {
+    <p class="nada">Nadie está buscando jugadores ahora.</p>
+  }
+</section>

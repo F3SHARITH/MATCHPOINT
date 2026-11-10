@@ -1,0 +1,81 @@
+/* Los colores (--bg, --brand, --futbol, ...) son globales: están en src/styles.scss. */
+:host {
+  display: block;
+  font-family: 'Manrope', system-ui, sans-serif;
+  color: var(--text);
+}
+
+.app { max-width: 1440px; margin: 0 auto; padding: 24px 24px 96px; }
+
+.saludo {
+  margin-bottom: 18px;
+
+  h1 { font-family: 'Outfit', sans-serif; font-size: 26px; font-weight: 800; margin: 0 0 4px; letter-spacing: -0.01em; }
+  p { margin: 0; color: var(--text-dim); font-size: 14px; }
+  b { color: var(--text); }
+}
+
+.distribucion { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; align-items: start; }
+.distribucion.con-lateral { grid-template-columns: minmax(0, 1fr) 310px; }
+.principal { min-width: 0; }
+.lateral { position: sticky; top: 20px; }
+
+/* Buscador + filtros en una sola tarjeta, como en el boceto. */
+.buscar {
+  display: flex; flex-direction: column; gap: 10px; padding: 12px; margin-bottom: 14px;
+  border-radius: 18px; background: var(--surface); border: 1px solid var(--border);
+}
+.filtros { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.filtro {
+  position: relative; display: flex; align-items: center; gap: 10px; padding: 9px 12px; cursor: pointer;
+  border-radius: 12px; background: var(--bg-soft); border: 1px solid var(--border-soft);
+  > app-icono { color: var(--brand); }
+  &:hover { border-color: var(--border); }
+}
+.filtro-texto {
+  flex: 1; min-width: 0; display: flex; flex-direction: column;
+  small { font-size: 11px; color: var(--text-faint); font-weight: 700; }
+  span { font-size: 13.5px; font-weight: 700; }
+}
+select {
+  appearance: none; padding: 0; border: none; outline: none; cursor: pointer;
+  background: transparent; color: var(--text); font-size: 13.5px; font-weight: 700;
+  option { background: var(--surface); }
+}
+
+.filtro input { display: none; }
+.track {
+  width: 34px; height: 19px; flex: none; border-radius: 999px; position: relative;
+  background: var(--surface-2); border: 1px solid var(--border); transition: background .15s;
+  &::after {
+    content: ''; position: absolute; top: 2px; left: 2px; width: 13px; height: 13px;
+    border-radius: 50%; background: var(--text-dim); transition: transform .15s, background .15s;
+  }
+}
+.filtro input:checked + .track { background: color-mix(in srgb, var(--brand) 35%, var(--surface-2)); border-color: var(--brand); }
+.filtro input:checked + .track::after { transform: translateX(15px); background: var(--brand); }
+
+.seccion-titulo {
+  display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin: 24px 0 12px;
+  h2 { font-family: 'Outfit', sans-serif; font-size: 20px; margin: 0; }
+}
+.conteo { font-size: 13px; color: var(--text-dim); b { color: var(--text); } }
+.quitar {
+  padding: 4px 10px; border-radius: 999px; cursor: pointer; font-size: 12px; font-weight: 700;
+  border: 1px solid var(--border); background: var(--surface-2); color: var(--text);
+}
+
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 16px; }
+
+.empty-state { grid-column: 1 / -1; text-align: center; padding: 60px 20px; color: var(--text-dim); }
+.empty-state h3 { color: var(--text); margin: 0 0 6px; }
+
+@media (max-width: 1280px) {
+  .distribucion.con-lateral { grid-template-columns: minmax(0, 1fr); }
+  .lateral { display: none; }
+}
+@media (max-width: 760px) {
+  .filtros { grid-template-columns: 1fr 1fr; }
+  .filtro:last-child { grid-column: 1 / -1; }
+}
+@media (max-width: 640px) { .app { padding: 16px 14px 110px; } }

@@ -1,0 +1,120 @@
+<div class="page">
+  <div class="page-head">
+    <div>
+      <h1>Mis reservas</h1>
+      <p>Aquí ves tus partidos. Llega 10 minutos antes.</p>
+    </div>
+    <a class="boton boton-primario" routerLink="/canchas"><app-icono nombre="mas" /> Reservar otra cancha</a>
+  </div>
+
+  <div class="confianza" [class.lista]="confianza().esDeConfianza">
+    <div class="confianza-texto">
+      <b>Nivel de confianza</b>
+      @if (confianza().esDeConfianza) {
+        <span>Cumples tus reservas: ninguna cancha te pide anticipo.</span>
+      } @else if (confianza().fallas) {
+        <span>No llegaste a {{ confianza().fallas }} {{ confianza().fallas === 1 ? 'reserva' : 'reservas' }}: algunas canchas te piden anticipo.</span>
+      } @else {
+        <span>Cumple {{ reservasParaConfianza - confianza().cumplidas }} más y ya no te pedimos anticipo.</span>
+      }
+    </div>
+    <div class="puntos" [attr.aria-label]="confianza().cumplidas + ' reservas cumplidas'">
+      @for (paso of pasosConfianza; track paso) {
+        <i [class.on]="paso < confianza().cumplidas"></i>
+      }
+    </div>
+  </div>
+
+  <h2 class="seccion">Próximas</h2>
+
+  @if (reservasService.misProximas().length) {
+    <div class="proximas">
+      @for (reserva of reservasService.misProximas(); track reserva.id) {
+        <article class="reserva" [style.--c]="colorDeporte(reserva)">
+          <div class="cuando">
+            <span class="cuando-dia">{{ etiquetaDia(reserva.fecha) }}</span>
+            <span class="cuando-hora">{{ horaTexto(reserva.hora) }}</span>
+            <span class="cuando-fecha">{{ fechaLarga(reserva.fecha) }}</span>
+            <span class="insignia codigo">{{ reserva.codigo }}</span>
+          </div>
+
+          <div class="detalle">
+            <h3>{{ cancha(reserva)?.nombre }}</h3>
+            <p>{{ nombreEmpresa(reserva) }} · {{ cancha(reserva)?.zona }}</p>
+            <div class="etiquetas">
+              <span class="estado" [class.ok]="reserva.estado !== 'apartada'" [class.aviso]="reserva.estado === 'apartada'">
+                {{ textoEstado[reserva.estado] }}
+              </span>
+              @if (reserva.modalidad === 'vaca') { <span class="insignia">Vaca</span> }
+              @if (reserva.modalidad === 'reto') { <span class="insignia">Reto</span> }
+            </div>
+            <p class="pago">
+              @if (saldoDe(reserva) === 0) {
+                Pagado: {{ reserva.precio | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}
+              } @else if (totalPagado(reserva) > 0) {
+                Anticipo {{ totalPagado(reserva) | currency: 'COP' : 'symbol-narrow' : '1.0-0' }} ·
+                en la cancha <b>{{ saldoDe(reserva) | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</b>
+              } @else {
+                En la cancha: <b>{{ reserva.precio | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</b>
+              }
+            </p>
+            @if (reserva.reto; as reto) {
+              <p>{{ reto.equipoA }} vs {{ reto.equipoB }} · el que pierde paga el saldo</p>
+            }
+          </div>
+
+          @if (reserva.vaca) {
+            <app-vaca class="ancho" [reserva]="reserva" />
+          }
+
+          <div class="acciones">
+            @if (porCancelar() === reserva.id) {
+              <span class="pregunta">¿Seguro?</span>
+              <button type="button" class="boton boton-peligro boton-chico" (click)="cancelar(reserva.id)">Sí, cancelar</button>
+              <button type="button" class="boton boton-secundario boton-chico" (click)="porCancelar.set(null)">No</button>
+            } @else {
+              <a class="boton boton-secundario boton-chico" routerLink="/comunidad" [queryParams]="{ reserva: reserva.id }">
+                <app-icono nombre="usuarios" /> Buscar jugadores
+              </a>
+              @if (reserva.modalidad !== 'organizador') {
+                <a class="boton boton-primario boton-chico" [href]="linkGrupo(reserva)" target="_blank" rel="noopener">Enviar al grupo</a>
+              }
+              <button type="button" class="boton boton-secundario boton-chico" (click)="porCancelar.set(reserva.id)">Cancelar</button>
+            }
+          </div>
+        </article>
+      }
+    </div>
+  } @else {
+    <div class="panel vacio">
+      <h3>No tienes partidos pendientes</h3>
+      <p>Busca una cancha y resérvala en pocos clics.</p>
+      <a class="boton boton-primario" routerLink="/canchas">Buscar canchas</a>
+    </div>
+  }
+
+  @if (reservasService.miHistorial().length) {
+    <h2 class="seccion">Historial</h2>
+    <div class="panel historial">
+      @for (reserva of reservasService.miHistorial(); track reserva.id) {
+        <div class="fila">
+          <span class="punto-deporte" [style.background]="colorDeporte(reserva)"></span>
+          <span class="fila-cancha">
+            {{ cancha(reserva)?.nombre }}
+            @if (reserva.reto; as reto) {
+              <small>{{ reto.equipoA }} vs {{ reto.equipoB }} · {{ resultadoReto(reserva) }}</small>
+            }
+            @if (deudaReto(reserva); as deuda) {
+              <small class="deuda">{{ deuda.deudor }} le debe {{ deuda.monto | currency: 'COP' : 'symbol-narrow' : '1.0-0' }} a {{ deuda.acreedor }}</small>
+            }
+          </span>
+          <span class="fila-fecha">{{ fechaCorta(reserva.fecha) }} · {{ horaTexto(reserva.hora) }}</span>
+          <span class="estado" [class.mal]="reserva.estado === 'cancelada' || reserva.estado === 'no-llego'"
+            [class.neutro]="reserva.estado !== 'cancelada' && reserva.estado !== 'no-llego'">
+            {{ reserva.estado === 'cancelada' || reserva.estado === 'no-llego' ? textoEstado[reserva.estado] : 'Jugada' }}
+          </span>
+        </div>
+      }
+    </div>
+  }
+</div>

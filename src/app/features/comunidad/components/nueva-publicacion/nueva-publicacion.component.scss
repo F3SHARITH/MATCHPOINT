@@ -1,0 +1,41 @@
+:host { display: block; }
+
+.nueva {
+  display: flex; flex-direction: column; gap: 10px; padding: 18px;
+  background: var(--surface); border: 1px solid color-mix(in srgb, var(--brand) 30%, var(--border)); border-radius: 18px;
+}
+
+.cabecera { display: flex; align-items: center; gap: 10px; font-size: 15px; }
+.avatar {
+  width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center;
+  background: var(--surface-2); border: 1.5px solid var(--brand); font-weight: 800; font-size: 13px;
+}
+
+.tipos { display: grid; gap: 6px; }
+.etiqueta { display: block; font-size: 12.5px; font-weight: 800; color: var(--text-dim); margin-top: 4px; }
+
+.deportes { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip-deporte {
+  --c: var(--brand);
+  display: inline-flex; align-items: center; gap: 6px; padding: 7px 12px; border-radius: 999px; cursor: pointer;
+  border: 1px solid var(--border); background: transparent; color: var(--text); font-size: 13px; font-weight: 700;
+  &.activo { border-color: var(--c); background: color-mix(in srgb, var(--c) 18%, transparent); color: var(--c); }
+}
+
+.detalles { display: flex; gap: 18px; flex-wrap: wrap; align-items: flex-end; }
+.nivel { flex: 1; min-width: 240px; }
+.niveles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 6px; .eleccion { align-items: center; } }
+.contador {
+  display: flex; align-items: center; gap: 10px; margin-top: 6px;
+  button { width: 36px; height: 36px; border-radius: 10px; border: 1px solid var(--border); background: var(--surface-2); color: var(--text); cursor: pointer; font-size: 16px; }
+  b { min-width: 22px; text-align: center; font-family: 'Outfit', sans-serif; font-size: 20px; }
+}
+
+.ayuda { margin: 0; font-size: 13px; color: var(--text-dim); b { color: var(--brand); } }
+
+textarea { resize: vertical; font-family: inherit; }
+
+.pie {
+  display: flex; align-items: center; justify-content: flex-end; gap: 12px;
+  small { color: var(--text-faint); font-size: 12px; }
+}

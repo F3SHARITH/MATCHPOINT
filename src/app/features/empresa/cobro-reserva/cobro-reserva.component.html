@@ -1,0 +1,61 @@
+<div class="modal-fondo" (click)="cerrar.emit()"></div>
+
+<div class="modal" role="dialog" aria-modal="true" aria-label="Cobrar reserva">
+  @if (!cobrado()) {
+    <h2>Cobrar · {{ horaTexto(reserva.hora) }}</h2>
+    <p class="sub">{{ nombreCancha }} · {{ reserva.cliente }} · <span class="insignia">{{ reserva.codigo }}</span></p>
+
+    <div class="cuentas">
+      <div><span>Total</span><b>{{ reserva.precio | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</b></div>
+      <div><span>Ya pagado</span><b>{{ totalPagado(reserva) | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</b></div>
+      <div class="falta"><span>Falta</span><b>{{ saldoDe(reserva) | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</b></div>
+    </div>
+
+    @if (reserva.vaca; as vaca) {
+      <p class="nota-caja">Hicieron vaca entre {{ vaca.length }}: {{ listosVaca }} ya le pagaron al organizador.</p>
+    }
+
+    @if (reserva.reto; as reto) {
+      <span class="etiqueta">¿Quién ganó?</span>
+      <div class="opciones">
+        <button type="button" class="eleccion" [class.activo]="ganador() === 'A'" (click)="elegirGanador('A')">{{ reto.equipoA }}</button>
+        <button type="button" class="eleccion" [class.activo]="ganador() === 'B'" (click)="elegirGanador('B')">{{ reto.equipoB }}</button>
+        <button type="button" class="eleccion" [class.activo]="ganador() === 'empate'" (click)="elegirGanador('empate')">Empate</button>
+      </div>
+
+      <span class="etiqueta">¿Quién paga lo que falta?</span>
+      <div class="opciones">
+        <button type="button" class="eleccion" [class.activo]="pagadoPor() === 'A'" (click)="pagadoPor.set('A')">{{ reto.equipoA }}</button>
+        <button type="button" class="eleccion" [class.activo]="pagadoPor() === 'B'" (click)="pagadoPor.set('B')">{{ reto.equipoB }}</button>
+        <button type="button" class="eleccion" [class.activo]="pagadoPor() === 'mitad'" (click)="pagadoPor.set('mitad')">Mitad y mitad</button>
+      </div>
+    }
+
+    <label class="etiqueta" for="montoCobro">¿Cuánto recibes?</label>
+    <input id="montoCobro" class="entrada" type="number" min="0" step="1000" [value]="monto()" (input)="monto.set(+$any($event.target).value)" />
+
+    <span class="etiqueta">¿Cómo pagó?</span>
+    <div class="opciones">
+      @for (m of plataforma.metodosPago(); track m.id) {
+        <button type="button" class="eleccion" [class.activo]="metodo() === m.id" (click)="metodo.set(m.id)">{{ m.nombre }}</button>
+      }
+    </div>
+
+    <div class="botones">
+      <button type="button" class="boton boton-secundario" (click)="cerrar.emit()">Cancelar</button>
+      <button type="button" class="boton boton-primario" [disabled]="!puedeCobrar" (click)="cobrar()">
+        Registrar {{ monto() | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}
+      </button>
+    </div>
+  } @else {
+    <h2>¡Cobrado!</h2>
+    <p class="sub">Ya se sumó a la caja del día.</p>
+    @if (deuda(); as d) {
+      <p class="nota-caja">
+        <b>{{ d.deudor }}</b> le debe <b>{{ d.monto | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</b> a {{ d.acreedor }},
+        por el anticipo que puso. Eso lo arreglan entre ellos.
+      </p>
+    }
+    <button type="button" class="boton boton-primario boton-grande" (click)="cerrar.emit()">Listo</button>
+  }
+</div>

@@ -1,0 +1,14 @@
+<section>
+  <h2>Empresas recomendadas</h2>
+  <div class="fila">
+    @for (empresa of empresas(); track empresa.id) {
+      <button type="button" class="empresa" [style.--c]="empresa.color" (click)="ver(empresa.nombre)">
+        <span class="logo">{{ empresa.iniciales }}</span>
+        <span class="datos">
+          <b>{{ empresa.nombre }}</b>
+          <small><span class="estrella">★</span> {{ empresa.calificacion.toFixed(1) }} ({{ empresa.resenas }}) · {{ empresa.canchas }} {{ empresa.canchas === 1 ? 'cancha' : 'canchas' }}</small>
+        </span>
+      </button>
+    }
+  </div>
+</section>
