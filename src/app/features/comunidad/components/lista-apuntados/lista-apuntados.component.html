@@ -1,0 +1,18 @@
+<div class="apuntados">
+  <b class="titulo">Ya se apuntaron</b>
+  @for (jugador of publicacion.apuntados; track jugador.usuarioId) {
+    <div class="fila">
+      <span class="avatar">{{ iniciales(jugador.nombre) }}</span>
+      <span class="quien">
+        <b>{{ jugador.nombre }}</b>
+        <small [class.confiable]="esDeConfianza(jugador.usuarioId)">{{ historial(jugador.usuarioId) }}</small>
+      </span>
+      @if (porQuitar() === jugador.usuarioId) {
+        <button type="button" class="boton boton-peligro boton-chico" (click)="quitar(jugador.usuarioId)">Sí, quitar</button>
+        <button type="button" class="boton boton-secundario boton-chico" (click)="porQuitar.set(null)">No</button>
+      } @else {
+        <button type="button" class="boton boton-secundario boton-chico" (click)="porQuitar.set(jugador.usuarioId)">Quitar</button>
+      }
+    </div>
+  }
+</div>

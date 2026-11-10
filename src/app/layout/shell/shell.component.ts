@@ -4,6 +4,7 @@ import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/rou
 import { SesionService, INICIO_POR_ROL } from '../../core/sesion/sesion.service';
 import { NOMBRE_ROL, Rol } from '../../core/sesion/sesion.model';
 import { IconoComponent } from '../../shared/icono/icono.component';
+import { ComunidadService } from '../../features/comunidad/services/comunidad.service';
 import { MENU_POR_ROL } from '../menu';
 
 /**
@@ -20,6 +21,9 @@ import { MENU_POR_ROL } from '../menu';
 export class ShellComponent {
   readonly sesion = inject(SesionService);
   private readonly router = inject(Router);
+
+  /** Globito en "Comunidad" cuando alguien espera respuesta. */
+  readonly invitaciones = inject(ComunidadService).invitacionesPendientes;
 
   readonly roles: Rol[] = ['usuario', 'empresa', 'admin'];
   readonly nombreRol = NOMBRE_ROL;

@@ -37,6 +37,9 @@
       @for (item of menu(); track item.ruta) {
         <a [routerLink]="item.ruta" routerLinkActive="activo">
           <app-icono [nombre]="item.icono" />{{ item.texto }}
+          @if (item.ruta === '/comunidad' && invitaciones().length) {
+            <span class="globo" [attr.aria-label]="invitaciones().length + ' invitaciones sin responder'">{{ invitaciones().length }}</span>
+          }
         </a>
       }
     </nav>
@@ -65,6 +68,9 @@
       <a [routerLink]="item.ruta" routerLinkActive="activo">
         <app-icono [nombre]="item.icono" />
         <span>{{ item.texto }}</span>
+        @if (item.ruta === '/comunidad' && invitaciones().length) {
+          <span class="globo" [attr.aria-label]="invitaciones().length + ' invitaciones sin responder'">{{ invitaciones().length }}</span>
+        }
       </a>
     }
   </nav>

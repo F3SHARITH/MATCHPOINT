@@ -99,6 +99,11 @@ export function cuotaVaca(reserva: Reserva): number {
   return jugadores ? Math.ceil(reserva.precio / jugadores / 100) * 100 : 0;
 }
 
+/** Lo que pone cada jugador: la cuota de la vaca o, sin vaca, el precio entre los jugadores habituales del deporte. */
+export function cuotaPorJugador(reserva: Reserva, deporteId: DeporteId): number {
+  return reserva.vaca ? cuotaVaca(reserva) : Math.ceil(reserva.precio / JUGADORES_POR_DEPORTE[deporteId] / 100) * 100;
+}
+
 /**
  * Después de un reto, quién le debe a quién. Pasa porque el anticipo lo puso el responsable
  * (equipo A) pero el saldo lo pagó el que perdió.

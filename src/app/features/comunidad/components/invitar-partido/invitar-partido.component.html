@@ -1,0 +1,16 @@
+<div class="invitar">
+  @if (reservas.length) {
+    <b>¿A cuál partido lo invitas?</b>
+    @for (reserva of reservas; track reserva.id) {
+      <button type="button" class="opcion" (click)="invitar(reserva)">
+        <span class="datos">
+          <b>{{ cancha(reserva)?.nombre }}</b>
+          <small>{{ etiquetaDia(reserva.fecha) }} · {{ horaTexto(reserva.hora) }}</small>
+        </span>
+        <app-icono nombre="enviar" />
+      </button>
+    }
+  } @else {
+    <p>No tienes reservas de {{ nombreDeporte }}. <a routerLink="/canchas">Reserva una cancha</a> y vuelve a invitar.</p>
+  }
+</div>

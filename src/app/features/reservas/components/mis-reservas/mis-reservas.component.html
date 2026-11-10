@@ -25,6 +25,10 @@
     </div>
   </div>
 
+  @if (comunidad.invitacionesPendientes().length) {
+    <app-invitaciones />
+  }
+
   <h2 class="seccion">Próximas</h2>
 
   @if (reservasService.misProximas().length) {
@@ -90,6 +94,13 @@
       <h3>No tienes partidos pendientes</h3>
       <p>Busca una cancha y resérvala en pocos clics.</p>
       <a class="boton boton-primario" routerLink="/canchas">Buscar canchas</a>
+    </div>
+  }
+
+  @if (comunidad.misPartidos().length) {
+    <h2 class="seccion">Partidos a los que vas</h2>
+    <div class="panel">
+      <app-mis-partidos />
     </div>
   }
 

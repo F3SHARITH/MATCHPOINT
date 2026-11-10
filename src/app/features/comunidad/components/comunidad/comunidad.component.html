@@ -2,7 +2,7 @@
   <div class="page-head">
     <div>
       <h1>Comunidad</h1>
-      <p>Encuentra con quién jugar en Yopal: publica que te faltan jugadores o únete a un partido.</p>
+      <p>Encuentra con quién jugar en Yopal: publica que te falta alguien, o que quieres jugar.</p>
     </div>
   </div>
 
@@ -18,13 +18,21 @@
             </button>
           }
         </div>
-        <div class="deportes">
+        <div class="opciones">
           @for (d of canchasService.deportes(); track d.id) {
-            <button type="button" class="punto" [style.--c]="d.hex" [class.activo]="deporte() === d.id"
-              (click)="deporte.set(deporte() === d.id ? null : d.id)" [attr.aria-label]="'Solo ' + d.nombre" [attr.title]="d.nombre">
+            <button type="button" class="chip-opcion" [style.--c]="d.hex" [class.activo]="deporte() === d.id"
+              (click)="deporte.set(deporte() === d.id ? null : d.id)">
+              <span class="punto-deporte" [style.background]="d.hex"></span>{{ d.nombre }}
             </button>
           }
         </div>
+        @if (filtro() === 'faltan') {
+          <div class="opciones">
+            @for (o of opcionesCuando; track o.id) {
+              <button type="button" class="chip-opcion" [class.activo]="cuando() === o.id" (click)="cuando.set(o.id)">{{ o.texto }}</button>
+            }
+          </div>
+        }
       </div>
 
       @for (publicacion of lista(); track publicacion.id) {
@@ -38,10 +46,21 @@
     </div>
 
     <aside class="lado">
-      <section class="panel">
+      @if (comunidad.invitacionesPendientes().length) {
+        <app-invitaciones />
+      }
+
+      @if (comunidad.misPartidos().length) {
+        <section class="panel">
+          <h2>Tus partidos</h2>
+          <app-mis-partidos />
+        </section>
+      }
+
+      <section class="panel secundario">
         <h2>Buscan jugadores</h2>
         @for (p of buscanAhora(); track p.id) {
-          <button type="button" class="busca" [style.--c]="colorDe(p)" (click)="verFaltan()">
+          <button type="button" class="busca" [style.--c]="colorDe(p)" (click)="verTipo('faltan')">
             <span class="busca-cupos">{{ cuposLibres(p) }}</span>
             <span class="busca-texto">
               <b>{{ nombreCancha(p) }}</b>
@@ -58,12 +77,28 @@
         }
       </section>
 
-      <section class="panel como">
+      @if (quierenAhora().length) {
+        <section class="panel secundario">
+          <h2>Quieren jugar</h2>
+          @for (p of quierenAhora(); track p.id) {
+            <button type="button" class="busca" [style.--c]="colorDe(p)" (click)="verTipo('busco-equipo')">
+              <span class="busca-cupos inicial">{{ iniciales(p.autor) }}</span>
+              <span class="busca-texto">
+                <b>{{ p.autor }}</b>
+                <small>{{ detalleQuiere(p) }}</small>
+              </span>
+              <app-icono nombre="flecha" />
+            </button>
+          }
+        </section>
+      }
+
+      <section class="panel secundario como">
         <h2>Así funciona</h2>
         <ol>
-          <li><b>Publica</b> cuántos te faltan, el deporte y el nivel.</li>
-          <li>Los interesados tocan <b>Me apunto</b> y ven la cancha y la hora.</li>
-          <li>Si viene de una reserva con vaca, <b>entran solos a tu vaca</b>.</li>
+          <li><b>¿Te falta alguien?</b> Publica cuántos, el nivel y la posición. Los que toquen <b>Me apunto</b> entran solos a tu vaca.</li>
+          <li><b>¿Quieres jugar?</b> Publica cuándo puedes y espera a que te inviten.</li>
+          <li>Tus partidos quedan en <b>Mis reservas</b>.</li>
         </ol>
       </section>
     </aside>

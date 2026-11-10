@@ -1,10 +1,16 @@
+@let mia = comunidad.esMia(publicacion);
+
 <article class="publicacion" [style.--c]="deporte?.hex ?? 'var(--brand)'">
   <header>
     <span class="avatar" [class.empresa]="publicacion.rolAutor === 'empresa'">{{ iniciales }}</span>
     <div class="quien">
       <b>{{ publicacion.autor }}</b>
       <small>
-        @if (publicacion.rolAutor === 'empresa') { <span class="insignia">Empresa</span> }
+        @if (publicacion.rolAutor === 'empresa') {
+          <span class="insignia">Empresa</span>
+        } @else if (autorDeConfianza) {
+          <span class="insignia">De confianza</span>
+        }
         {{ haceCuanto(publicacion.creado) }}
       </small>
     </div>
@@ -22,28 +28,55 @@
     <div class="partido">
       <div class="partido-cabecera">
         <span class="cuantos">{{ cupos > 0 ? (cupos === 1 ? 'Falta 1' : 'Faltan ' + cupos) : '¡Completos!' }}</span>
+        @if (busqueda.posicion; as posicion) {
+          <span class="insignia">Buscan {{ posicion.toLowerCase() }}</span>
+        }
         <span class="insignia">{{ textoNivel[busqueda.nivel] }}</span>
         @if (deporte; as d) {
           <span class="deporte"><span class="punto-deporte" [style.background]="d.hex"></span>{{ d.nombre }}</span>
         }
       </div>
-      @if (busqueda.partido; as partido) {
-        <div class="linea"><app-icono nombre="ubicacion" />{{ nombreCancha(partido.canchaId) }}</div>
-        <div class="linea">
-          <app-icono nombre="calendario" />{{ etiquetaDia(partido.fecha) }} {{ fechaCorta(partido.fecha) }} · {{ horaTexto(partido.hora) }}
-        </div>
-      }
+      <div class="linea"><app-icono nombre="ubicacion" />{{ nombreCancha(busqueda.partido.canchaId) }}</div>
+      <div class="linea">
+        <app-icono nombre="calendario" />{{ etiquetaDia(busqueda.partido.fecha) }} {{ fechaCorta(busqueda.partido.fecha) }} · {{ horaTexto(busqueda.partido.hora) }}
+      </div>
       @if (busqueda.cuota) {
         <div class="linea"><app-icono nombre="dinero" />Cada uno pone {{ busqueda.cuota | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</div>
       }
       <div class="cupos">
         @for (i of cuposDibujo; track i) {
-          <i [class.lleno]="i < publicacion.apuntados.length"></i>
+          <i [class.lleno]="i < publicacion.apuntados.length || publicacion.cerrada"></i>
         }
-        @if (publicacion.apuntados.length) {
+        @if (publicacion.apuntados.length && !mia) {
           <small>Se apuntaron: {{ nombresApuntados() }}</small>
         }
       </div>
+    </div>
+
+    @if (mia && publicacion.apuntados.length) {
+      <app-lista-apuntados [publicacion]="publicacion" />
+    }
+
+    @if (comunidad.estoyApuntado(publicacion) && !yaSeJugo) {
+      <div class="dentro">
+        <span><b>¡Estás dentro!</b> Ya lo ves en Mis reservas.</span>
+        <a class="boton boton-secundario boton-chico" [href]="comunidad.linkOrganizador(publicacion.autor, busqueda.partido)" target="_blank" rel="noopener">
+          Escribirle a {{ primerNombre }}
+        </a>
+      </div>
+    }
+  } @else if (publicacion.disponibilidad; as disponible) {
+    <div class="partido">
+      <div class="partido-cabecera">
+        @if (disponible.posicion; as posicion) {
+          <span class="cuantos">{{ posicion }}</span>
+        }
+        <span class="insignia">{{ textoNivel[disponible.nivel] }}</span>
+        @if (deporte; as d) {
+          <span class="deporte"><span class="punto-deporte" [style.background]="d.hex"></span>{{ d.nombre }}</span>
+        }
+      </div>
+      <div class="linea"><app-icono nombre="reloj" />{{ textoDias[disponible.dias] }} · {{ textoFranja[disponible.franja].toLowerCase() }}</div>
     </div>
   } @else if (deporte; as d) {
     <span class="deporte suelto"><span class="punto-deporte" [style.background]="d.hex"></span>{{ d.nombre }}</span>
@@ -59,22 +92,38 @@
     </button>
     <span class="espacio"></span>
 
-    @if (publicacion.busqueda) {
-      @if (comunidad.esMia(publicacion)) {
-        <span class="nota">Tu publicación</span>
-      } @else if (comunidad.estoyApuntado(publicacion)) {
+    @if (puedeCerrar) {
+      <button type="button" class="boton boton-secundario boton-chico" (click)="comunidad.alternarCerrada(publicacion.id)">
+        {{ publicacion.cerrada ? 'Reabrir' : publicacion.busqueda ? 'Ya los conseguí' : 'Ya conseguí equipo' }}
+      </button>
+    } @else if (publicacion.busqueda) {
+      @if (comunidad.estoyApuntado(publicacion)) {
         <button type="button" class="boton boton-secundario boton-chico" (click)="comunidad.salirme(publicacion.id)">Ya estás · Salirme</button>
-      } @else if (cupos > 0 && !yaSeJugo) {
+      } @else if (soyJugador && cupos > 0 && !yaSeJugo) {
         <button type="button" class="boton boton-primario boton-chico" (click)="comunidad.apuntarme(publicacion.id)">Me apunto</button>
       } @else {
-        <span class="nota">{{ yaSeJugo ? 'Ya se jugó' : 'Completo' }}</span>
+        <span class="nota">{{ yaSeJugo ? 'Ya se jugó' : cupos > 0 ? 'Buscan jugadores' : 'Completo' }}</span>
       }
-    } @else if (!comunidad.esMia(publicacion)) {
+    } @else if (publicacion.disponibilidad) {
+      @if (publicacion.cerrada) {
+        <span class="nota">Ya consiguió equipo</span>
+      } @else if (invitacion; as enviada) {
+        <span class="nota">{{ textoInvitacion[enviada.estado] }}</span>
+      } @else if (soyJugador) {
+        <button type="button" class="boton boton-primario boton-chico" (click)="invitando.set(!invitando())" [attr.aria-expanded]="invitando()">
+          Invitar a mi partido
+        </button>
+      }
+    } @else if (!mia) {
       <button type="button" class="boton boton-secundario boton-chico" (click)="responder()">
         {{ publicacion.tipo === 'evento' ? 'Me interesa' : 'Responder' }}
       </button>
     }
   </footer>
+
+  @if (invitando() && !invitacion) {
+    <app-invitar-partido [publicacion]="publicacion" (listo)="invitando.set(false)" />
+  }
 
   @if (comentariosAbiertos()) {
     <div class="comentarios">

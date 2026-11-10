@@ -74,7 +74,8 @@ Primero hagan **una tajada completa, de punta a punta**: login → ver canchas �
 | `configuracion` | valor de la mensualidad, hora pico desde / hasta | `plataforma.mock.ts` |
 | `favoritos` | usuario_id, cancha_id | `favoritos.service.ts` |
 | `codigos_verificacion` | usuario o celular, código (hash), vence, intentos | registro de Bryan |
-| `publicaciones`, `apuntados`, `me_gusta`, `comentarios` | ver `publicacion.model.ts` | comunidad (después) |
+| `publicaciones`, `apuntados`, `me_gusta`, `comentarios` | ver `publicacion.model.ts` (incluye posición, disponibilidad y cerrada) | comunidad (después) |
+| `invitaciones` | id, publicacion_id, de_id, para_id, cancha_id, reserva_id, fecha, hora, cuota, estado (pendiente / aceptada / rechazada) | comunidad (después) |
 | `resenas` | usuario_id, cancha_id, reserva_id, estrellas, comentario | nueva (después) |
 
 - [ ] Escribir `schema.prisma` y crear la primera migración.
@@ -142,6 +143,10 @@ Primero hagan **una tajada completa, de punta a punta**: login → ver canchas �
 - [ ] `GET /api/publicaciones?tipo=&deporte=`
 - [ ] `POST /api/publicaciones` y `DELETE /api/publicaciones/:id` (solo el autor o el admin).
 - [ ] `POST` y `DELETE /api/publicaciones/:id/apuntados`, que también suman o quitan al jugador de la vaca de esa reserva.
+- [ ] `DELETE /api/publicaciones/:id/apuntados/:usuarioId` (el organizador saca a alguien) y `PATCH /api/publicaciones/:id` (cerrar o reabrir).
+- [ ] `GET /api/invitaciones/mias`, `POST /api/invitaciones` y `PATCH /api/invitaciones/:id` (aceptar o rechazar; al aceptar entra a la vaca).
+- [ ] `GET /api/partidos/mios`: partidos de otros a los que va el jugador (apuntado o invitado).
+- [ ] El celular del organizador solo se entrega a quienes ya van al partido.
 - [ ] `POST` y `DELETE /api/publicaciones/:id/me-gusta`
 - [ ] `POST /api/publicaciones/:id/comentarios`
 - [ ] Reportar una publicación; el admin puede borrarla.

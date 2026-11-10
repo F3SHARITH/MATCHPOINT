@@ -1,0 +1,14 @@
+.invitar {
+  display: flex; flex-direction: column; gap: 6px; padding: 12px; border-radius: 12px; font-size: 13.5px; background: var(--bg-soft);
+  p { margin: 0; color: var(--text-dim); }
+  a { color: var(--c, var(--brand)); font-weight: 700; }
+}
+
+.opcion {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px; width: 100%; padding: 10px 12px; text-align: left; cursor: pointer;
+  border: 1px solid var(--border); border-radius: 10px; background: var(--surface); color: var(--text);
+  app-icono { width: 18px; height: 18px; color: var(--c, var(--brand)); }
+  &:hover { border-color: var(--c, var(--brand)); }
+}
+
+.datos { display: flex; flex-direction: column; small { font-size: 12px; color: var(--text-dim); } }

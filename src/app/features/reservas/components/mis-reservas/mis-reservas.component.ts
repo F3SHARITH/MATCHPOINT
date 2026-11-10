@@ -10,17 +10,21 @@ import {
 } from '../../models/reserva.model';
 import { linkWhatsApp, mensajeParaElGrupo } from '../../utils/mensaje-whatsapp.util';
 import { VacaComponent } from '../vaca/vaca.component';
+import { ComunidadService } from '../../../comunidad/services/comunidad.service';
+import { InvitacionesComponent } from '../../../comunidad/components/invitaciones/invitaciones.component';
+import { MisPartidosComponent } from '../../../comunidad/components/mis-partidos/mis-partidos.component';
 
-/** "Mis reservas" del jugador: nivel de confianza, lo que viene (con la vaca) y su historial. */
+/** "Mis reservas" del jugador: nivel de confianza, lo que viene (con la vaca), partidos de otros a los que va e historial. */
 @Component({
   selector: 'app-mis-reservas',
   standalone: true,
-  imports: [CurrencyPipe, RouterLink, IconoComponent, VacaComponent],
+  imports: [CurrencyPipe, RouterLink, IconoComponent, VacaComponent, InvitacionesComponent, MisPartidosComponent],
   templateUrl: './mis-reservas.component.html',
   styleUrl: './mis-reservas.component.scss',
 })
 export class MisReservasComponent {
   readonly reservasService = inject(ReservasService);
+  readonly comunidad = inject(ComunidadService);
   private readonly canchasService = inject(CanchasService);
 
   /** Reserva a la que se le tocó "Cancelar" y espera la segunda confirmación. */

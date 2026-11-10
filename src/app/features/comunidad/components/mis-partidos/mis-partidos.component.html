@@ -1,0 +1,19 @@
+@for (m of comunidad.misPartidos(); track m.id) {
+  <article class="partido" [style.--c]="deporte(m)?.hex ?? 'var(--brand)'">
+    <div class="cuando">
+      <b>{{ etiquetaDia(m.partido.fecha) }}</b>
+      <span>{{ horaTexto(m.partido.hora) }}</span>
+    </div>
+    <div class="datos">
+      <b>{{ nombreCancha(m) }}</b>
+      <small>{{ deporte(m)?.nombre }} · organiza {{ m.organizador }}</small>
+      @if (m.cuota) {
+        <small>Llevas {{ m.cuota | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</small>
+      }
+    </div>
+    <div class="acciones">
+      <a class="boton boton-secundario boton-chico" [href]="comunidad.linkOrganizador(m.organizador, m.partido)" target="_blank" rel="noopener">Escribirle</a>
+      <button type="button" class="boton boton-secundario boton-chico" (click)="comunidad.salirDe(m)">Salirme</button>
+    </div>
+  </article>
+}

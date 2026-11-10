@@ -1,0 +1,18 @@
+:host { display: block; }
+
+.panel { border-color: color-mix(in srgb, var(--brand) 40%, var(--border)); }
+
+.invitacion {
+  display: flex; flex-direction: column; gap: 6px; font-size: 13.5px;
+  & + .invitacion { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border-soft); }
+  p { margin: 0 0 2px; }
+}
+
+.deporte { color: var(--c); }
+
+.linea {
+  display: flex; align-items: center; gap: 8px; color: var(--text-dim); font-size: 13px;
+  app-icono { width: 16px; height: 16px; color: var(--c); flex: none; }
+}
+
+.acciones { display: flex; gap: 6px; margin-top: 6px; }

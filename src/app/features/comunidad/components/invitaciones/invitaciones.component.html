@@ -1,0 +1,19 @@
+<section class="panel">
+  <h2>Te invitaron a jugar</h2>
+  @for (invitacion of comunidad.invitacionesPendientes(); track invitacion.id) {
+    <article class="invitacion" [style.--c]="deporte(invitacion).hex">
+      <p><b>{{ invitacion.deNombre }}</b> te invita a jugar <b class="deporte">{{ deporte(invitacion).nombre.toLowerCase() }}</b></p>
+      <div class="linea"><app-icono nombre="ubicacion" />{{ nombreCancha(invitacion) }}</div>
+      <div class="linea">
+        <app-icono nombre="calendario" />{{ etiquetaDia(invitacion.partido.fecha) }} {{ fechaCorta(invitacion.partido.fecha) }} · {{ horaTexto(invitacion.partido.hora) }}
+      </div>
+      @if (invitacion.cuota) {
+        <div class="linea"><app-icono nombre="dinero" />Cada uno pone {{ invitacion.cuota | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</div>
+      }
+      <div class="acciones">
+        <button type="button" class="boton boton-primario boton-chico" (click)="comunidad.responderInvitacion(invitacion, true)">Voy</button>
+        <button type="button" class="boton boton-secundario boton-chico" (click)="comunidad.responderInvitacion(invitacion, false)">No puedo</button>
+      </div>
+    </article>
+  }
+</section>

@@ -113,7 +113,17 @@ export function reservasIniciales(): Reserva[] {
     }
   }
 
-  return [...sinChoques(reservas, reservasDeLaJugadora(hoy)), ...reservasDeLaJugadora(hoy)];
+  return [...sinChoques(reservas, reservasDeLaJugadora(hoy)), ...reservasDeLaJugadora(hoy), ...reservasDeJugadoraConfiable(hoy)];
+}
+
+/** Historial limpio de una jugadora de la comunidad, para ver cómo se muestra alguien "de confianza". */
+function reservasDeJugadoraConfiable(hoy: string): Reserva[] {
+  const cliente = 'Laura Martínez';
+  return [-18, -17, -16].map((dia, i): Reserva => ({
+    id: `r-laura-${i}`, codigo: `REZ-LM${i}QX`, canchaId: 'c11', usuarioId: 'j-laura', cliente, fecha: sumarDias(hoy, dia), hora: 7, precio: 55000,
+    metodoPago: 'en-cancha', estado: 'pagada', modalidad: 'organizador',
+    pagos: [{ monto: 55000, metodo: 'en-cancha', quien: cliente, registradoPor: 'Diana (recepción)', fecha: sumarDias(hoy, dia) }],
+  }));
 }
 
 /** Reservas de la cuenta demo del rol jugador: una vaca, un reto pendiente y un reto ya jugado. */
@@ -128,8 +138,8 @@ function reservasDeLaJugadora(hoy: string): Reserva[] {
       vaca: [
         { nombre, estado: 'pago' },
         { nombre: 'Sofía', estado: 'pago' },
-        { nombre: 'Mateo', estado: 'debe' },
-        { nombre: 'Lucía', estado: 'al-llegar' },
+        { nombre: 'Laura Martínez', estado: 'debe' },
+        { nombre: 'Jugador 4', estado: 'debe' },
       ],
     },
     {
