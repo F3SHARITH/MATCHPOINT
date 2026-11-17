@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { CanchasService } from '../../services/canchas.service';
 import { ResultadoBusqueda } from '../../models/busqueda.model';
 import { resaltar } from '../../utils/text.util';
+import { IconoComponent } from '../../../../shared/icono/icono.component';
 
 /**
  * Buscador con autocompletado en vivo agrupado por categoría (estilo Roblox):
@@ -11,7 +12,7 @@ import { resaltar } from '../../utils/text.util';
 @Component({
   selector: 'app-buscador-canchas',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, IconoComponent],
   templateUrl: './buscador-canchas.component.html',
   styleUrl: './buscador-canchas.component.scss',
 })

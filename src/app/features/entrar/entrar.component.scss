@@ -1,3 +1,6 @@
+/* Curva de salida rápida (Emil Kowalski): el movimiento arranca de inmediato y frena suave. */
+$salida: cubic-bezier(0.23, 1, 0.32, 1);
+
 .entrar {
   min-height: 100vh; display: grid; place-items: center; padding: 32px 16px;
   background:
@@ -9,8 +12,9 @@
 
 .marca { display: block; height: 58px; width: auto; margin-bottom: 26px; mix-blend-mode: lighten; }
 
-h1 { font-family: 'Outfit', sans-serif; font-size: clamp(34px, 7vw, 46px); line-height: 1.05; font-weight: 800; margin: 0 0 10px; }
-.lema { color: var(--text-dim); margin: 0 0 16px; font-size: 15px; }
+/* balance y pretty reparten las palabras entre líneas para que no quede una sola palabra suelta al final. */
+h1 { font-family: 'Outfit', sans-serif; font-size: clamp(34px, 7vw, 46px); line-height: 1.05; font-weight: 800; margin: 0 0 10px; text-wrap: balance; }
+.lema { color: var(--text-dim); margin: 0 0 16px; font-size: 15px; text-wrap: pretty; }
 
 .deportes {
   display: flex; gap: 6px; margin-bottom: 30px;
@@ -21,14 +25,29 @@ h2 { font-size: 15px; color: var(--text-dim); font-weight: 700; margin: 0 0 12px
 
 .opciones { display: flex; flex-direction: column; gap: 10px; }
 
+/*
+ * Cada opción entra una vez al abrir la pantalla, una tras otra (40 ms entre cada una).
+ * "backwards" aplica el estado inicial solo mientras espera su turno; al terminar suelta el
+ * transform, así el hover y el clic pueden seguir moviendo el botón.
+ */
 .opcion {
   display: flex; align-items: center; gap: 14px; width: 100%; text-align: left; cursor: pointer;
   padding: 16px; border-radius: 16px; border: 1px solid var(--border); background: var(--surface); color: var(--text);
-  transition: border-color 0.15s, transform 0.15s, background 0.15s;
+  transition: transform 160ms $salida, border-color 150ms ease, background-color 150ms ease;
+  animation: aparecer-opcion 360ms $salida backwards;
 
-  &:hover { border-color: var(--brand); background: var(--surface-2); transform: translateY(-1px); }
-  &:hover .opcion-flecha { color: var(--brand); transform: translateX(3px); }
+  &:nth-child(2) { animation-delay: 40ms; }
+  &:nth-child(3) { animation-delay: 80ms; }
 }
+
+/* El hover solo existe con mouse: en el celular un toque no debe dejar el botón "levantado". */
+@media (hover: hover) and (pointer: fine) {
+  .opcion:hover { border-color: var(--brand); background: var(--surface-2); transform: translateY(-1px); }
+  .opcion:hover .opcion-flecha { color: var(--brand); transform: translateX(3px); }
+}
+
+/* Al presionar, el botón se hunde un poco: confirma que la app recibió el clic. Va después del hover para ganarle. */
+.opcion:active { transform: scale(0.98); }
 
 .opcion-icono {
   width: 46px; height: 46px; border-radius: 12px; display: grid; place-items: center; flex: none;
@@ -38,8 +57,22 @@ h2 { font-size: 15px; color: var(--text-dim); font-weight: 700; margin: 0 0 12px
 
 .opcion-texto { flex: 1; display: flex; flex-direction: column; gap: 2px; }
 .opcion-titulo { font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 18px; }
-.opcion-desc { font-size: 13.5px; color: var(--text-dim); }
+.opcion-desc { font-size: 14px; color: var(--text-dim); text-wrap: pretty; }
 .opcion-precio { font-size: 12px; font-weight: 800; color: var(--brand); margin-top: 2px; }
-.opcion-flecha { color: var(--text-faint); transition: transform 0.15s, color 0.15s; }
+.opcion-flecha { color: var(--text-faint); transition: transform 200ms $salida, color 150ms ease; }
 
-.nota { margin: 22px 0 0; font-size: 12px; color: var(--text-faint); text-align: center; }
+/* --text-dim en vez de --text-faint: contraste 7.59 (antes 3.62, por debajo del mínimo AA de 4.5). */
+.nota { margin: 22px 0 0; font-size: 13px; color: var(--text-dim); text-align: center; text-wrap: pretty; }
+
+@keyframes aparecer-opcion {
+  from { opacity: 0; transform: translateY(8px); }
+}
+@keyframes aparecer-suave {
+  from { opacity: 0; }
+}
+
+/* Quien pide "reducir movimiento": nada se desplaza, solo cambian colores y la entrada es un fundido. */
+@media (prefers-reduced-motion: reduce) {
+  .opcion { animation-name: aparecer-suave; }
+  .opcion:hover, .opcion:active, .opcion:hover .opcion-flecha { transform: none; }
+}

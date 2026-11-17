@@ -67,6 +67,12 @@ body {
 button, input, select { font: inherit; }
 a { color: inherit; }
 
+/*
+ * Anillo de foco para quien navega con teclado (Tab), igual en toda la app.
+ * :focus-visible solo aparece con teclado; al hacer clic con el mouse no se ve.
+ */
+:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+
 @media (prefers-reduced-motion: reduce) {
   :root { transition: none; }
 }

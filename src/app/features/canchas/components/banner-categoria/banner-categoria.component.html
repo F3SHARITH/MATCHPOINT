@@ -30,7 +30,7 @@
     <div class="stats">
       <div class="stat"><b>{{ stats.totalCanchas }}</b><span>Canchas</span></div>
       <div class="stat"><b>{{ stats.empresasAsociadas }}</b><span>Empresas</span></div>
-      <div class="stat"><b>★ {{ stats.calificacionPromedio.toFixed(1) }}</b><span>Calificación</span></div>
+      <div class="stat"><b><app-icono nombre="estrella" class="estrella" />{{ stats.calificacionPromedio.toFixed(1) }}</b><span>Calificación</span></div>
       <div class="stat"><b>${{ stats.precioPromedio | number: '1.0-0' : 'es-CO' }}</b><span>Promedio por hora</span></div>
     </div>
   </div>

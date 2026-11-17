@@ -15,7 +15,7 @@
       (blur)="onBlur()"
       (keydown)="onKeydown($event)" />
     @if (texto()) {
-      <button type="button" class="search-clear" (click)="limpiar()" aria-label="Limpiar búsqueda">✕</button>
+      <button type="button" class="search-clear" (click)="limpiar()" aria-label="Limpiar búsqueda"><app-icono nombre="cerrar" /></button>
     }
   </div>
 

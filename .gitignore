@@ -42,3 +42,6 @@ __screenshots__/
 # System files
 .DS_Store
 Thumbs.db
+
+# Skills de Claude Code instaladas localmente (pesadas, cada quien instala las suyas)
+/.claude/skills/

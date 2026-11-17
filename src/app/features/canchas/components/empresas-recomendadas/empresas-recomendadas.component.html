@@ -6,7 +6,7 @@
         <span class="logo">{{ empresa.iniciales }}</span>
         <span class="datos">
           <b>{{ empresa.nombre }}</b>
-          <small><span class="estrella">★</span> {{ empresa.calificacion.toFixed(1) }} ({{ empresa.resenas }}) · {{ empresa.canchas }} {{ empresa.canchas === 1 ? 'cancha' : 'canchas' }}</small>
+          <small><app-icono nombre="estrella" class="estrella" />{{ empresa.calificacion.toFixed(1) }} ({{ empresa.resenas }}) · {{ empresa.canchas }} {{ empresa.canchas === 1 ? 'cancha' : 'canchas' }}</small>
         </span>
       </button>
     }

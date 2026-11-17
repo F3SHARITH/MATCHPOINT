@@ -1,6 +1,7 @@
 import { Component, computed, inject } from '@angular/core';
 import { PlataformaService } from '../../../../core/plataforma/plataforma.service';
 import { CanchasService } from '../../services/canchas.service';
+import { IconoComponent } from '../../../../shared/icono/icono.component';
 
 /**
  * Fila de empresas mejor calificadas (calculado de sus canchas). Tocar una filtra el grid por esa empresa.
@@ -9,6 +10,7 @@ import { CanchasService } from '../../services/canchas.service';
 @Component({
   selector: 'app-empresas-recomendadas',
   standalone: true,
+  imports: [IconoComponent],
   templateUrl: './empresas-recomendadas.component.html',
   styleUrl: './empresas-recomendadas.component.scss',
 })

@@ -1,4 +1,6 @@
-:host { display: block; }
+/* --s: curva de salida rápida (arranca de inmediato y frena suave). Variable CSS para no repetirla y no pasar el límite de 4 kB. */
+:host { display: block; --s: cubic-bezier(0.23, 1, 0.32, 1); }
+$salida: var(--s);
 
 .card {
   background: var(--surface);
@@ -7,19 +9,13 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  transition: transform .15s, border-color .15s;
-  position: relative;
-
-  &:hover { transform: translateY(-2px); border-color: color-mix(in srgb, var(--c) 55%, var(--border)); }
+  transition: transform 200ms $salida, border-color 150ms ease;
 }
 
-/* --c es el color del deporte de la cancha (lo pone la plantilla en .card). */
+/* --c es el color del deporte de la cancha (lo pone la plantilla en .card). Todo lo de adentro va posicionado encima. */
 .card-media {
   height: 160px;
   position: relative;
-  display: flex;
-  align-items: flex-end;
-  padding: 10px 12px;
   overflow: hidden;
   background:
     radial-gradient(120% 140% at 15% 0%, color-mix(in srgb, var(--c) 55%, transparent), transparent 60%),
@@ -32,12 +28,11 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform .25s;
+  transition: transform 400ms $salida;
 
   &.oculta { display: none; }
 }
 
-.card:hover .card-img { transform: scale(1.04); }
 
 .card-media-overlay {
   position: absolute;
@@ -48,23 +43,28 @@
 .ribbon {
   position: absolute; top: 10px; left: 10px;
   background: var(--c); color: var(--brand-ink);
-  font-size: 10.5px; font-weight: 800; text-transform: uppercase; letter-spacing: .03em;
+  font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: .03em;
   padding: 4px 8px; border-radius: 999px;
 }
 
+/* El círculo se ve de 36px; el ::before amplía el área táctil a 44px sin cambiar el dibujo. */
 .fav-btn {
-  position: absolute; top: 10px; right: 10px;
-  width: 28px; height: 28px; border-radius: 50%;
+  position: absolute; top: 6px; right: 6px;
+  width: 36px; height: 36px; border-radius: 50%;
   background: rgba(10, 13, 11, .55); border: 1px solid rgba(255, 255, 255, .12);
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer; color: #fff; font-size: 15px; line-height: 1;
+  display: grid; place-items: center;
+  cursor: pointer; color: #fff;
+  transition: transform 160ms $salida;
 
+  &::before { content: ''; position: absolute; inset: -4px; }
+  &:active { transform: scale(0.92); }
   &.on { color: #FF5B7A; }
+  &.on app-icono ::ng-deep svg { fill: currentColor; }
 }
 
 .avail-badge {
   position: absolute; bottom: 10px; right: 10px;
-  font-size: 10.5px; font-weight: 700; padding: 4px 8px; border-radius: 999px;
+  font-size: 12px; font-weight: 700; padding: 4px 8px; border-radius: 999px;
 
   &.yes { background: color-mix(in srgb, var(--futbol) 22%, var(--bg-soft)); color: var(--futbol); }
   &.no { background: color-mix(in srgb, var(--danger) 20%, var(--bg-soft)); color: var(--danger); }
@@ -73,11 +73,10 @@
 .card-body { padding: 14px; display: flex; flex-direction: column; gap: 9px; flex: 1; }
 
 .sport-badge {
-  --c: var(--brand);
   display: inline-flex; align-items: center; gap: 6px; align-self: flex-start;
   padding: 3px 9px 3px 7px; border-radius: 999px;
   background: color-mix(in srgb, var(--c) 18%, transparent); color: var(--c);
-  font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .03em;
+  font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: .03em;
 
   .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--c); }
 }
@@ -87,28 +86,47 @@
 
 .card-tags { display: flex; flex-wrap: wrap; gap: 5px; }
 .tag {
-  font-size: 10.5px; color: var(--text-dim); background: var(--surface-2);
-  border: 1px solid var(--border); padding: 3px 7px; border-radius: 6px;
+  font-size: 12px; color: var(--text-dim); background: var(--surface-2);
+  border: 1px solid var(--border); padding: 2px 7px; border-radius: 6px;
 }
 
 .occ-bar {
   height: 5px; border-radius: 999px; background: var(--surface-2); overflow: hidden;
   i { display: block; height: 100%; background: var(--brand); }
 }
-.occ-lbl { font-size: 11px; color: var(--text-dim); display: flex; justify-content: space-between; }
+.occ-lbl { font-size: 12px; color: var(--text-dim); display: flex; justify-content: space-between; }
 
 .card-meta-row { display: flex; align-items: center; justify-content: space-between; margin-top: auto; padding-top: 4px; }
 .price {
   font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 18px; font-variant-numeric: tabular-nums; color: var(--c);
-  span { font-family: 'Manrope', sans-serif; font-weight: 500; font-size: 11px; color: var(--text-dim); }
+  span { font-family: 'Manrope'; font-weight: 500; font-size: 12px; color: var(--text-dim); }
 }
 .rating {
   display: flex; align-items: center; gap: 4px; font-size: 12.5px; font-weight: 700; color: #F2C94C;
+  app-icono { width: 14px; height: 14px; ::ng-deep svg { fill: currentColor; } }
   span { color: var(--text-dim); font-weight: 500; }
 }
 
+/* El botón principal es más ancho que "Detalles" para que "Reservar ahora" quepa en una línea. */
 .card-actions { display: flex; gap: 8px; }
-.btn { flex: 1; text-align: center; border: none; border-radius: 8px; padding: 9px 10px; font-weight: 700; font-size: 13px; cursor: pointer; }
-.btn-primary { background: var(--c); color: var(--brand-ink); &:hover { filter: brightness(1.08); } }
+.btn {
+  flex: 1; white-space: nowrap; border: none; border-radius: 8px; padding: 9px 10px;
+  font-weight: 700; font-size: 13px; cursor: pointer;
+  transition: transform 160ms $salida;
+  &:active { transform: scale(0.97); }
+}
+.btn-primary { flex: 1.5; background: var(--c); color: var(--brand-ink); }
 .btn-ghost { background: var(--surface-2); color: var(--text); border: 1px solid var(--border); }
-.btn-muted { background: transparent; color: var(--text-faint); border: 1px dashed var(--border); cursor: default; }
+.btn-muted { background: none; color: var(--text-faint); border: 1px dashed var(--border); cursor: default; }
+
+/* Solo con mouse: en el celular un toque no debe dejar la tarjeta "levantada". */
+@media (hover: hover) and (pointer: fine) {
+  .card:hover { transform: translateY(-2px); border-color: color-mix(in srgb, var(--c) 55%, var(--border)); }
+  .card:hover .card-img { transform: scale(1.03); }
+  .btn-primary:hover { filter: brightness(1.08); }
+}
+
+/* "Reducir movimiento": la tarjeta y la foto no se desplazan; solo cambia el color del borde. */
+@media (prefers-reduced-motion: reduce) {
+  .card:hover, .card:hover .card-img { transform: none; }
+}

@@ -67,7 +67,9 @@
           {{ canchasService.canchasFiltradas().length === 1 ? 'cancha' : 'canchas' }}
         </span>
         @if (canchasService.query()) {
-          <button type="button" class="quitar" (click)="canchasService.setQuery('')">"{{ canchasService.query() }}" ✕</button>
+          <button type="button" class="quitar" (click)="canchasService.setQuery('')" [attr.aria-label]="'Quitar búsqueda ' + canchasService.query()">
+            "{{ canchasService.query() }}" <app-icono nombre="cerrar" />
+          </button>
         }
       </div>
 

@@ -2,6 +2,7 @@ import { Component, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SesionService } from '../../../../core/sesion/sesion.service';
 import { SvgSeguroPipe } from '../../../../shared/pipes/svg-seguro.pipe';
+import { IconoComponent } from '../../../../shared/icono/icono.component';
 import { CanchasService } from '../../services/canchas.service';
 import { Deporte } from '../../models/deporte.model';
 import { ICONOS_DEPORTE, ICONO_TODOS } from '../../data/iconos-deporte';
@@ -15,7 +16,7 @@ import { ICONOS_CARACTERISTICA } from '../../data/iconos-caracteristica';
 @Component({
   selector: 'app-banner-categoria',
   standalone: true,
-  imports: [CommonModule, SvgSeguroPipe],
+  imports: [CommonModule, SvgSeguroPipe, IconoComponent],
   templateUrl: './banner-categoria.component.html',
   styleUrl: './banner-categoria.component.scss',
 })

@@ -18,8 +18,14 @@
       <span class="ribbon">{{ etiqueta }}</span>
     }
     @if (modo === 'usuario') {
-      <button class="fav-btn" [class.on]="esFavorita" (click)="favorito.emit(cancha.id)" aria-label="Favorito">
-        {{ esFavorita ? '♥' : '♡' }}
+      <button
+        type="button"
+        class="fav-btn"
+        [class.on]="esFavorita"
+        [attr.aria-pressed]="esFavorita"
+        [attr.aria-label]="'Favorita: ' + cancha.nombre"
+        (click)="favorito.emit(cancha.id)">
+        <app-icono nombre="corazon" />
       </button>
     }
     <span class="avail-badge" [class.yes]="cancha.disponibleAhora" [class.no]="!cancha.disponibleAhora">
@@ -48,17 +54,17 @@
 
     <div class="card-meta-row">
       <div class="price">${{ cancha.precioHora | number:'1.0-0':'es-CO' }}<span> /hora</span></div>
-      <div class="rating">★ {{ cancha.calificacion.toFixed(1) }} <span>({{ cancha.numResenas }})</span></div>
+      <div class="rating"><app-icono nombre="estrella" />{{ cancha.calificacion.toFixed(1) }} <span>({{ cancha.numResenas }})</span></div>
     </div>
 
     <div class="card-actions">
       @if (modo === 'usuario') {
-        <button class="btn btn-primary" (click)="reservar.emit(cancha.id)">Reservar ahora</button>
+        <button type="button" class="btn btn-primary" (click)="reservar.emit(cancha.id)">Reservar ahora</button>
         <button class="btn btn-ghost" type="button">Detalles</button>
       } @else if (modo === 'admin') {
         <button class="btn btn-ghost" type="button">Ver ficha</button>
       } @else if (esPropia) {
-        <button class="btn btn-primary" (click)="gestionar.emit(cancha.id)">Gestionar</button>
+        <button type="button" class="btn btn-primary" (click)="gestionar.emit(cancha.id)">Gestionar</button>
         <button class="btn btn-ghost" type="button">Ver ficha</button>
       } @else {
         <button class="btn btn-muted" disabled>Cancha de otra empresa</button>

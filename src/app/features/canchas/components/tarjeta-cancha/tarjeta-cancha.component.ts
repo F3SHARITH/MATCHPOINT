@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Rol } from '../../../../core/sesion/sesion.model';
+import { IconoComponent } from '../../../../shared/icono/icono.component';
 import { Cancha } from '../../models/cancha.model';
 import { CanchasService } from '../../services/canchas.service';
 import { ocupacionEjemplo } from '../../utils/ocupacion.util';
@@ -9,7 +10,7 @@ import { ocupacionEjemplo } from '../../utils/ocupacion.util';
 @Component({
   selector: 'app-tarjeta-cancha',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, IconoComponent],
   templateUrl: './tarjeta-cancha.component.html',
   styleUrl: './tarjeta-cancha.component.scss',
 })
